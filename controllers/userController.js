@@ -68,4 +68,5 @@ const deleteUser = (req,res,next) => {
 
 }
 
+
 module.exports = {findUserData,showID,addUser,updateUser,deleteUser}

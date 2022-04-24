@@ -5,13 +5,14 @@ const User = require('../models/userModel')
 const db = require("../models")
 //const Role = db.roleUser
 const register = (req,res,next)=>{
-    bcryptjs.hash(req.body.password,10).then(()=>{
+    bcryptjs.hash(req.body.password,10).then((user)=>{
+        console.log(user)
         let newUser = new User({
             name:req.body.name,
-            password:req.body.password,
+            password:user,
             email:req.body.email,
             phone:req.body.phone,
-            role:req.body.role
+            role:req.body.role  
         })
       //   newUser.save((err, user) => {
       //       if (err) {
@@ -76,22 +77,30 @@ const register = (req,res,next)=>{
  const login = (req,res,next) => {
      var email = req.body.email
      var password = req.body.password
-     User.findOne({$or : [{email:email}, {phone:email}]})
+   //  User.findOne({$or : [{email:email}, {phone:email}]})
+         User.findOne({ email })
     // .populate("roles", "-__v")
      .then((user)=>{
          if(user)
          {    
-           bcryptjs.compare(password,user.password, function(err,result){
-            if(err)
-            {
-             res.status(500).json({error:err})
-            }
-               if (!result)
+             console.log(password)
+        // bcryptjs.hash(password,10,function(err,hash){
+        //     console.log(hash + " hash")
+        //     console.log(user.password + " hash password")
+        //     if(err)
+        //     {
+        //         throw err
+        //     }
+           
+        //     else {
+           bcryptjs.compare(password,user.password, function(err,data) {
+               if(err) 
                {
-                // var authorities = [];
-                // for (let i = 0; i < user.roles.length; i++) {
-                //   authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
-                // }
+                   res.status(500).json({error})
+               }
+
+            if(data){
+                    console.log(user.password)
                    let token = jwt.sign({id:user.id}, "verySecretValue", {expiresIn : "1h"} )
                    let refreshToken = jwt.sign({name:user.name}, "refreshToken", {expiresIn : "48h"} )
                     res.status(200).json({
@@ -99,23 +108,29 @@ const register = (req,res,next)=>{
                         id: user._id,
                         email: user.email,
                         role:user.role,
-                       // roles: authorities,
                         token,
                         refreshToken
                     })
-               }
-               else {
-                res.status(500).json({message: "Password does not match"})
-               }
+              }
+              else {
+                  res.status(500).json({message: "Password does not match"})
+              }
+              
            })
-         }
+        }
+        //  })
+        // }
          else {
             res.status(500).json({message: "No user found"})
          }
+         
      })
  }
 
+
+
  const refreshToken = (req,res,next) => {
+     const refreshToken = req.body.refreshToken
     jwt.verify(refreshToken, "refreshToken", {expiresIn:"48h"}, function (err,decode){
         if(err)
         {

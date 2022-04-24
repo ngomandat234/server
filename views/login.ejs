@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+  </head>
+  <body>
+    <h1>Login Page</h1>
+    <form>
+      <div class="error" style="background-color: red;"></div>
+      <br />
+      <label for="email">Email</label><br />
+      <input type="text" id="email" required /><br />
+      <label for="password">Password</label><br />
+      <input type="password" id="password" required /><br />
+      <input type="submit" value="login" /><br />
+    </form>
+    <a href="/user/register">Don't have an accout? Register</a>
+    <script>
+      const form = document.querySelector('form')
+      const username = document.querySelector('#username')
+      const password = document.querySelector('#password')
+      const display = document.querySelector('.error')
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        display.textContent = ''
+        try {
+          const res = await fetch('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ email: email.value, password: password.value }),
+            headers: { 'Content-Type': 'application/json' }
+            })
+          const data = await res.json()
+          console.log(JSON.stringify(data) + " khi dang nhap")
+          if (res.status === 400 || res.status === 401) {
+            return display.textContent = `${data.message}. ${data.error ? data.error : ''}`
+          }
+          // else if (res.status===200){
+         
+          data.role === "admin" ? location.assign('/user/admin') : location.assign('/user/basicUser')   
+                 // }
+        //  console.log(data.role + " khi dang nhap")
+        //   if(data.role ==="admin")
+        //   location.assign('/user/admin')
+        //   else location.assign('/user/basicUser')
+        } catch (err) {
+            console.log(err.message)
+          }
+        })
+      </script>
+  </body>
+</html>

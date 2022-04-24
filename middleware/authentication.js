@@ -10,11 +10,8 @@ const authenticate = (req,res,next) => {
     //req.body = decode
     req.userID = decode.id
     //var userID = decode.id
-    console.log(JSON.stringify(decode) + "decode id ")
-    console.log(req.userID)
-    console.log(token)
-    res.cookie("access-token", token, { maxAge: 86400000 });
-    res.cookie("user-data", JSON.stringify(token), { maxAge: 86400000 });
+    res.cookie("access-token", token, { maxAge: 86400000 ,httpOnly:true});
+    res.cookie("user-data", JSON.stringify(token), { maxAge: 86400000 ,httpOnly:true});
     next()
 }
     catch(err){

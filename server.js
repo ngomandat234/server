@@ -4,6 +4,7 @@ const cors = require('cors')
 const app = express()
 const user = require('./routers/user')
 const authUser = require('./routers/auth')
+const path = require("path")
 const cookieParser = require('cookie-parser')
 const PORT = process.env.PORT || 3001
 const mongoose = require('mongoose');
@@ -25,6 +26,14 @@ app.use(cors())
 app.use('/user',user)
 app.use('/auth',authUser)
 app.use(cookieParser())
+// app.engine('hbs', handlebars({
+//     extname : '.hbs',
+//     helpers: {
+//         sum: (a,b) => a+b
+//     }
+// }));
+app.set('view engine','ejs');
+app.set('views', path.join(__dirname, 'views'));
 // app.get('/cookie', function(req, res){
 //   res.cookie('name', 'freetuts.net', { expires: new Date(Date.now() + 900000)});
 //   res.send('success')   
@@ -39,7 +48,7 @@ app.use(cookieParser())
 //   res.send('Da xoa cookie')
 // });
 // app.set('view engine', 'ejs')
-//app.use('/stream', router);
+// app.use('/stream', router);
 // const db = require("./models");
 // const Role = db.roleUser;
 // function InitRole() {
@@ -66,9 +75,7 @@ app.use(cookieParser())
 //   }
 
 // server stream
-//const NodeMediaServer = require('node-media-server');
-//const fs = require('fs');
-//const unirest = require("unirest");
+// const NodeMediaServer = require('node-media-server');
 // const config = {
 //   logType: 3,
 //   rtmp: {
