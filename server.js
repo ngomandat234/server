@@ -8,7 +8,7 @@ const path = require("path")
 const cookieParser = require('cookie-parser')
 const PORT = process.env.PORT || 3001
 const mongoose = require('mongoose');
-const URI = 'mongodb://localhost:27017/mern' 
+const URI = 'mongodb+srv://1111:1234@mernprojectceec.byvhv.mongodb.net/MERN_PROJECTCEEC?retryWrites=true&w=majority' 
 mongoose
 .connect(URI, {useNewUrlParser:true, useUnifiedTopology:true})
 .then(()=>{
@@ -23,6 +23,7 @@ mongoose
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true, limit:"30mb" }))
 app.use(cors())
+
 app.use('/user',user)
 app.use('/auth',authUser)
 app.use(cookieParser())
@@ -32,6 +33,8 @@ app.use(cookieParser())
 //         sum: (a,b) => a+b
 //     }
 // }));
+app.use('/',express.static(path.join(__dirname, 'public')));
+app.use('/user',express.static(path.join(__dirname, 'public')));
 app.set('view engine','ejs');
 app.set('views', path.join(__dirname, 'views'));
 // app.get('/cookie', function(req, res){

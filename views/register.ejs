@@ -3,24 +3,40 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="text/javascript" src="jquery.js"></script>
+    <link rel="stylesheet" href="module/bootstrap/dist/css/bootstrap.min.css">
+    <script src="module/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link href="register.css" rel="stylesheet">
     <title>Register Page</title>
   </head>
   <body>
-    <h1>Register Page</h1>
-    <form>
+    <nav class="navbar navbar-expand-md navbar-fixed-top navbar-blue main-nav">
+      <a class="navbar-item h5" href="/user/">HOME</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </nav>
+
+    <p style="text-align:center;"><img class="header-center" src="Header_Page.png" alt="" width="600" height="140"> </p>
+
+    <form class="form-register">   
+      <div class="registerremind">
+        <div class="alert alert-secondary text-center h5 mb-1" role="alert" data-aria-autofocus="true">Registration Form</div>
+      </div>
       <div class="error" style="background-color: red;"></div>
       <br />
-      <label for="name">Name</label><br />
-      <input type="text" id="name" required /><br />
-      <label for="email">Email</label><br />
-      <input type="text" id="email" required /><br />
-      <label for="password">Password</label><br />
-      <input type="password" id="password" required /><br />
-      <label for="phone">Phone</label><br />
-      <input type="text" id="phone" required /><br />
-      <input type="submit" value="register" /><br />
+      <label for="name" class="mt-10 form-label" >Full name:</label><br />
+      <input type="text" id="name" placeholder="Enter your name" class="form-control" required /><br />
+      <label for="email" class="form-label" >Email:</label><br />
+      <input type="text" id="email" placeholder="Enter your email" class="form-control" required /><br />
+      <label for="password" class="form-label" >Password:</label><br />
+      <input type="password" id="password" placeholder="Enter your password" class="form-control" required /><br />
+      <label for="phone" class="form-label" >Phone number:</label><br />
+      <input type="text" id="phone" placeholder="Enter your phone" class="form-control" required /><br />
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button><br />
+      <a href="/auth/login">Already registered? Login</a>
     </form>
-    <a href="/auth/login">Already registered? Login</a>
+    
     <script>
         const form = document.querySelector('form')
         const email = document.querySelector('#email')
