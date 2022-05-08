@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
+var fs = require('fs');
 const user = require('./routers/user')
 const authUser = require('./routers/auth')
 const path = require("path")
@@ -37,45 +38,44 @@ app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/user',express.static(path.join(__dirname, 'public')));
 app.set('view engine','ejs');
 app.set('views', path.join(__dirname, 'views'));
-// app.get('/cookie', function(req, res){
-//   res.cookie('name', 'freetuts.net', { expires: new Date(Date.now() + 900000)});
-//   res.send('success')   
-// });
-// app.get('/getCookie', function(req, res){
-//   if (req.cookies.name)
-//       res.send(`Cookie name co gia tri la ${req.cookies.name}`)
-//  res.send('Khong the tim lay cookie co ten la name')
-// });
-// app.get('/deleteCookie', function(req, res){
-//   res.clearCookie('name');
-//   res.send('Da xoa cookie')
-// });
-// app.set('view engine', 'ejs')
-// app.use('/stream', router);
-// const db = require("./models");
-// const Role = db.roleUser;
-// function InitRole() {
-//     Role.estimatedDocumentCount((err, count) => {
-//       if (!err && count === 0) {
-//         new Role({
-//           name: "user"
-//         }).save(err => {
-//           if (err) {
-//             console.log("error", err);
-//           }
-//           console.log("added 'user' to roles collection");
-//         });
-//         new Role({
-//           name: "admin"
-//         }).save(err => {
-//           if (err) {
-//             console.log("error", err);
-//           }
-//           console.log("added 'admin' to roles collection");
-//         });
-//       }
-//     });
-//   }
+app.get('/cookie', function(req, res){
+  res.cookie('name', 'freetuts.net', { expires: new Date(Date.now() + 900000)});
+  res.send('success')   
+});
+app.get('/getCookie', function(req, res){
+  if (req.cookies.name)
+      res.send(`Cookie name co gia tri la ${req.cookies.name}`)
+ res.send('Khong the tim lay cookie co ten la name')
+});
+app.get('/deleteCookie', function(req, res){
+  res.clearCookie('name');
+  res.send('Da xoa cookie')
+});
+app.set('view engine', 'ejs')
+const db = require("./models");
+const Role = db.roleUser;
+function InitRole() {
+    Role.estimatedDocumentCount((err, count) => {
+      if (!err && count === 0) {
+        new Role({
+          name: "user"
+        }).save(err => {
+          if (err) {
+            console.log("error", err);
+          }
+          console.log("added 'user' to roles collection");
+        });
+        new Role({
+          name: "admin"
+        }).save(err => {
+          if (err) {
+            console.log("error", err);
+          }
+          console.log("added 'admin' to roles collection");
+        });
+      }
+    });
+  }
 
 // server stream
 // const NodeMediaServer = require('node-media-server');

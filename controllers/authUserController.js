@@ -2,79 +2,46 @@
 const bcryptjs = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const User = require('../models/userModel')
-const db = require("../models")
-//const Role = db.roleUser
+const db = require("../models/validation")
 const register = (req,res,next)=>{
-    bcryptjs.hash(req.body.password,10).then((user)=>{
-        console.log(user)
-        let newUser = new User({
-            name:req.body.name,
-            password:user,
-            email:req.body.email,
-            phone:req.body.phone,
-            role:req.body.role  
-        })
-      //   newUser.save((err, user) => {
-      //       if (err) {
-      //         res.status(500).send({ message: err });
-      //         return;
-      //       }
-      //       if (req.body.roles) {
-      //         Role.find(
-      //           {
-      //             name: { $in: req.body.roles }
-      //           },
-      //           (err, roles) => {
-      //             if (err) {
-      //               res.status(500).send({ message: err });
-      //               return;
-      //             }
-      //             user.roles = roles.map(role => role._id);
-      //             console.log (roles + " role1")
-      //             console.log(JSON.stringify(roles) + " role khi dang ky1")
-      //             user.save(err => {
-      //               if (err) {
-      //                 res.status(500).send({ message: err });
-      //                 return;
-      //               }
-      //               res.send({ message: "User was registered successfully!" });
-      //             });
-      //           }
-      //         );
-      //       } else {
-      //         Role.findOne({ name: "user" }, (err, role) => {
-      //           if (err) {
-      //             res.status(500).send({ message: err });
-      //             return;
-      //           }
-      //           // user.roles = [role._id];
-      //           console.log (role + " role2")
-      //           console.log(JSON.stringify(role) + " role khi dang ky2")
-      //           user.save(err => {
-      //             if (err) {
-      //               res.status(500).send({ message: err });
-      //               return;
-      //             }
-      //             res.send({ message: "User was registered successfully!" });
-      //           });
-      //         });
-      //       }
-      //     });
-      //  });
-        newUser.save()
-        .then(()=>{
-            res.send("An auth user is added")
-        }).catch((err)=>{
-            res.status(500).json({error:err})
-        })
+    const{ error } = db.registerValidation(req.body);
+     if(error) return res.status(400).send(error.details[0].message)
+     else {
+    const email = req.body.email
+    User.findOne({ email }).then((user)=>{
+        if (!user)
+        {
+            bcryptjs.hash(req.body.password,10).then((user)=>{
+                console.log(user)
+                let newUser = new User({
+                    name:req.body.name,
+                    password:user,
+                    email:req.body.email,
+                    phone:req.body.phone,
+                    role:req.body.role  
+                })
+                newUser.save()
+                .then(()=>{
+                    res.send("An auth user is added")
+                }).catch((err)=>{
+                    res.status(500).json({error:err})
+                })
+            })
+            .catch((err)=>{
+                res.status(500).json({error:err})
+             })
+        }
+        else   res.status(500).json({message: "User da ton tai"})
     })
-    .catch((err)=>{
-        res.status(500).json({error:err})
-     })
+       
+} 
     //  next()
 }
 
  const login = (req,res,next) => {
+    const{ error } = db.loginValidation(req.body);
+    if(error) return res.status(400).send(error.details[0].message)
+    else {
      var email = req.body.email
      var password = req.body.password
    //  User.findOne({$or : [{email:email}, {phone:email}]})
@@ -125,6 +92,7 @@ const register = (req,res,next)=>{
          }
          
      })
+    }
  }
 
 
