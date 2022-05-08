@@ -7,10 +7,16 @@ const registerValidation = function(data){
         email: Joi.string()
                    .email()
                    .min(6)
-                   .required(),
+                   .required()
+                   .messages({
+                       'string.email':`The "Email" field is not a valid e-mail address!`
+                   }),
         password: Joi.string()
                    .min(6)
-                   .required(),
+                   .required()
+                   .messages({
+                    'string.min':`The password must be at least {#limit} characters long!`,
+                    }),
         phone : Joi.string(),
         role : Joi.string()
                           
@@ -22,7 +28,10 @@ const loginValidation = function(data){
         email: Joi.string()
                    .email()
                    .min(6)
-                   .required(),
+                   .required()
+                   .messages({
+                    'string.email':`The "Email" field is not a valid e-mail address!`
+                }),
         password: Joi.string()
                    .min(6)
                    .required(),

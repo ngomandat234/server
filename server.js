@@ -2,9 +2,12 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
+var server = require("http").Server(app)
+var io = require("socket.io")(server)
 var fs = require('fs');
 const user = require('./routers/user')
-const authUser = require('./routers/auth')
+const aa = "sdsdd"
+const authUser = require('./routers/auth')(aa)
 const path = require("path")
 const cookieParser = require('cookie-parser')
 const PORT = process.env.PORT || 3001
@@ -15,7 +18,7 @@ mongoose
 .then(()=>{
     console.log("Connect to db")
     //InitRole()
-    app.listen(PORT,()=>{
+    server.listen(PORT,()=>{
         console.log(`Server is listening on port ${PORT}`)
     })
 }).catch((err) => {

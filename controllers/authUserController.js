@@ -5,8 +5,8 @@ const User = require('../models/userModel')
 const db = require("../models/validation")
 const register = (req,res,next)=>{
     const{ error } = db.registerValidation(req.body);
-     if(error) return res.status(400).send(error.details[0].message)
-     else {
+    if(error) return res.status(400).json({message : error.message})
+    else {
     const email = req.body.email
     User.findOne({ email }).then((user)=>{
         if (!user)
@@ -22,7 +22,7 @@ const register = (req,res,next)=>{
                 })
                 newUser.save()
                 .then(()=>{
-                    res.send("An auth user is added")
+                    res.json("An auth user is added!")
                 }).catch((err)=>{
                     res.status(500).json({error:err})
                 })
@@ -31,16 +31,17 @@ const register = (req,res,next)=>{
                 res.status(500).json({error:err})
              })
         }
-        else   res.status(500).json({message: "User da ton tai"})
+        else   {
+                 res.status(500).json({message: "This email already used!"})
+                }
     })
-       
 } 
     //  next()
 }
 
  const login = (req,res,next) => {
     const{ error } = db.loginValidation(req.body);
-    if(error) return res.status(400).send(error.details[0].message)
+    if(error) return res.status(400).json({message : error.message})
     else {
      var email = req.body.email
      var password = req.body.password
@@ -80,7 +81,7 @@ const register = (req,res,next)=>{
                     })
               }
               else {
-                  res.status(500).json({message: "Password does not match"})
+                  res.status(500).json({message: "Email or password is incorrect!"})
               }
               
            })
@@ -88,7 +89,7 @@ const register = (req,res,next)=>{
         //  })
         // }
          else {
-            res.status(500).json({message: "No user found"})
+            res.status(500).json({message: "Email or password is incorrect!"})
          }
          
      })
