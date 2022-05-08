@@ -68,5 +68,23 @@ const deleteUser = (req,res,next) => {
 
 }
 
+const addStudent = async(req,res,next) => {
+    try{
+    const newUser = new user({
+        name : req.body.name,
+        id: req.body.id,
+        subject: req.body.subject,
+        teacher: req.body.teacher,
+        time: req.body.time
+    })
+    await newUser.save()
+   res.json({message:"Check student Successfully"})
 
-module.exports = {findUserData,showID,addUser,updateUser,deleteUser}
+    }
+    catch (err) {
+        res.json({message:"An Error Occured"})
+    }
+
+}
+
+module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent}

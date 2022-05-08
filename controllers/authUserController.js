@@ -12,7 +12,6 @@ const register = (req,res,next)=>{
         if (!user)
         {
             bcryptjs.hash(req.body.password,10).then((user)=>{
-                console.log(user)
                 let newUser = new User({
                     name:req.body.name,
                     password:user,
@@ -27,9 +26,7 @@ const register = (req,res,next)=>{
                     res.status(500).json({error:err})
                 })
             })
-            .catch((err)=>{
-                res.status(500).json({error:err})
-             })
+       
         }
         else   {
                  res.status(500).json({message: "This email already used!"})
@@ -47,20 +44,10 @@ const register = (req,res,next)=>{
      var password = req.body.password
    //  User.findOne({$or : [{email:email}, {phone:email}]})
          User.findOne({ email })
-    // .populate("roles", "-__v")
      .then((user)=>{
          if(user)
          {    
-             console.log(password)
-        // bcryptjs.hash(password,10,function(err,hash){
-        //     console.log(hash + " hash")
-        //     console.log(user.password + " hash password")
-        //     if(err)
-        //     {
-        //         throw err
-        //     }
-           
-        //     else {
+             //console.log(password)
            bcryptjs.compare(password,user.password, function(err,data) {
                if(err) 
                {
@@ -68,17 +55,17 @@ const register = (req,res,next)=>{
                }
 
             if(data){
-                    console.log(user.password)
-                   let token = jwt.sign({id:user.id}, "verySecretValue", {expiresIn : "1h"} )
-                   let refreshToken = jwt.sign({name:user.name}, "refreshToken", {expiresIn : "48h"} )
-                    res.status(200).json({
-                        message:"Login Successfully",
-                        id: user._id,
-                        email: user.email,
-                        role:user.role,
-                        token,
-                        refreshToken
-                    })
+                   let token = jwt.sign({id:user.id}, "ManDatDepTry", {expiresIn : "1h"} )
+                //    /let refreshToken = jwt.sign({name:user.name}, "refreshToken", {expiresIn : "48h"} )
+                    // res.status(200).json({
+                    //     message:"Login Successfully",
+                    //     id: user._id,
+                    //     email: user.email,
+                    //     role:user.role,
+                    //     token,
+                    //     //refreshToken   
+                    // })
+                    return res.cookie("token", token, { httpOnly: true,}) .status(200).json({ message: "Logged in successfully 😊 👌",id: user._id, role:user.role,});
               }
               else {
                   res.status(500).json({message: "Email or password is incorrect!"})

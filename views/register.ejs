@@ -61,8 +61,9 @@
               return display.textContent = `${data.message} ${data.error ? data.error : ''}`
               }
               else { 
-                data.role === "admin" ? location.assign('/user/admin') : location.assign('/user/basicUser')    
-                return display.textContent = `${data.message} ${data.error ? data.error : ''}`
+                //data.role === "admin" ? location.assign('/user/admin') : location.assign('/user/basicUser')    
+               location.assign('/user/login') 
+              //  return display.textContent = `${data.message} ${data.error ? data.error : ''}`
               }
        
               } catch (err) {

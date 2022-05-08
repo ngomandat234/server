@@ -9,18 +9,20 @@ const checkEmail = (req,res,next) => {
         if(err) {
             res.status(500).json ({
                 error : err
-            })
+            })  
         }
         if (data)  {
-            console.log("Username ton tai " + data)
+            //console.log("Username ton tai " + data)
             res.status(400).json({
                 message : "Username da ton tai " 
             })
+            return
         }
         else {
-          next()
-         
+            return next()
+
         }
+        
     })
    
 }
