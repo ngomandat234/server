@@ -1,6 +1,7 @@
 const express = require('express')
 var fs = require('fs')
 var ffmpeg = require('fluent-ffmpeg');
+var myMongoDbObject = {errorr : ''};
 const router = express.Router()
 const user  = require('../controllers/userController')
 const auth = require("../middleware/authentication")
@@ -13,7 +14,7 @@ const { createReadStream, createWriteStream } = require("fs")
 //     res.sendFile(__dirname + "/index.html")
 // })
 router.get("/",(req,res)=> res.render("../views/home.ejs"))
-router.get("/register",(req,res)=> res.render("../views/register.ejs"))
+router.get("/register",(req,res)=> res.render("../views/register.ejs",{locals: { data : myMongoDbObject }}))
 router.get("/login",(req,res)=> res.render("../views/login.ejs"))
 router.get("/admin",(req,res)=> res.render("../views/admin.ejs"))
 router.get("/basicUser",(req,res)=> res.render("../views/basicUser.ejs"))
