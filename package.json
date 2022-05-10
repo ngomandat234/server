@@ -27,6 +27,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "fs": "^0.0.1-security",
     "hbs": "^4.2.0",
+    "https": "^1.0.0",
     "id-auto-increment": "^1.0.1",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",

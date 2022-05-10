@@ -1,8 +1,7 @@
 const user = require('../models/userModel')
-const isAdmin = require("../middleware/checkAdmin")
+const student = require('../models/attedence')
 const findUserData = (req,res,next)=>{
     user.find()
-    
     .then ((respond)=>{
         res.status(200).json(respond)
     })
@@ -70,19 +69,19 @@ const deleteUser = (req,res,next) => {
 
 const addStudent = async(req,res,next) => {
     try{
-    const newUser = new user({
+    const newStudent = new student({
         name : req.body.name,
         id: req.body.id,
         subject: req.body.subject,
         teacher: req.body.teacher,
         time: req.body.time
     })
-    await newUser.save()
+    await newStudent.save()
    res.json({message:"Check student Successfully"})
 
     }
     catch (err) {
-        res.json({message:"An Error Occured"})
+        res.json({message:"Error"})
     }
 
 }

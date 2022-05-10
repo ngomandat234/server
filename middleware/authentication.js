@@ -25,7 +25,6 @@ const token = req.cookies.token;
     const data = jwt.verify(token, "ManDatDepTry");
     req.userId = data.id;
     req.userRole = data.role;
-    console.log (token + " token ne")
     return next();
   }
     catch(err){

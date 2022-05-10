@@ -13,7 +13,7 @@ const userSchema = new Schema ({
         required:true
     },
     age:{
-            type:Number
+        type:Number
     },
     phone: {
         type:String

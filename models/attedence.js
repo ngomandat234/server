@@ -13,7 +13,7 @@ const studentSchema = new Schema ({
     },
     teacher:{
         type : String,
-    },
+    },  
     time: {
         type : String,
         required:true

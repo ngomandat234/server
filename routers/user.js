@@ -8,6 +8,12 @@ router.get("/register",(req,res)=> res.render("../views/register.ejs",{locals: {
 router.get("/login",(req,res)=> res.render("../views/login.ejs"))
 router.get("/admin",(req,res)=> res.render("../views/admin.ejs"))
 router.get("/basicUser",(req,res)=> res.render("../views/basicUser.ejs"))
+router.get("/stream",function (req,res){
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
+    res.render("../views/stream.ejs")
+})
 router.get("/getUser",auth,user.findUserData)
 router.post("/showID", user.showID)
 router.post("/update", user.updateUser)

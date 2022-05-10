@@ -2,17 +2,23 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
-var server = require("http").Server(app)
 var io = require("socket.io")(server)
 var fs = require('fs');
 const user = require('./routers/user')
 const aa = "sdsdd"
-const authUser = require('./routers/auth')(aa)
+const authUser = require('./routers/auth')
+//const authUser = require('./routers/auth')(aa)
 const path = require("path")
 const cookieParser = require('cookie-parser')
 const PORT = process.env.PORT || 3001
 const mongoose = require('mongoose');
-const URI = 'mongodb://localhost:27017/testdb' 
+const URI = 'mongodb://localhost:27017/testdb'
+const options = {
+  key: fs.readFileSync('C:/Users/lemin/key.pem'),
+  cert: fs.readFileSync('C:/Users/lemin/cert.pem')
+}; 
+//var server = require("https").Server(options,app)
+var server = require("http").Server(app)
 mongoose
 .connect(URI, {useNewUrlParser:true, useUnifiedTopology:true})
 .then(()=>{
@@ -26,8 +32,11 @@ mongoose
 })
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true, limit:"30mb" }))
-app.use(cors())
-
+//app.use(cors())
+app.use(cors({
+  origin: '*',
+  methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
+}));
 app.use('/user',user)
 app.use('/auth',authUser)
 app.use(cookieParser())
@@ -41,44 +50,31 @@ app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/user',express.static(path.join(__dirname, 'public')));
 app.set('view engine','ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.get('/cookie', function(req, res){
-  res.cookie('name', 'freetuts.net', { expires: new Date(Date.now() + 900000)});
-  res.send('success')   
-});
-app.get('/getCookie', function(req, res){
-  if (req.cookies.name)
-      res.send(`Cookie name co gia tri la ${req.cookies.name}`)
- res.send('Khong the tim lay cookie co ten la name')
-});
-app.get('/deleteCookie', function(req, res){
-  res.clearCookie('name');
-  res.send('Da xoa cookie')
-});
 app.set('view engine', 'ejs')
 const db = require("./models");
 const Role = db.roleUser;
-function InitRole() {
-    Role.estimatedDocumentCount((err, count) => {
-      if (!err && count === 0) {
-        new Role({
-          name: "user"
-        }).save(err => {
-          if (err) {
-            console.log("error", err);
-          }
-          console.log("added 'user' to roles collection");
-        });
-        new Role({
-          name: "admin"
-        }).save(err => {
-          if (err) {
-            console.log("error", err);
-          }
-          console.log("added 'admin' to roles collection");
-        });
-      }
-    });
-  }
+// function InitRole() {
+//     Role.estimatedDocumentCount((err, count) => {
+//       if (!err && count === 0) {
+//         new Role({
+//           name: "user"
+//         }).save(err => {
+//           if (err) {
+//             console.log("error", err);
+//           }
+//           console.log("added 'user' to roles collection");
+//         });
+//         new Role({
+//           name: "admin"
+//         }).save(err => {
+//           if (err) {
+//             console.log("error", err);
+//           }
+//           console.log("added 'admin' to roles collection");
+//         });
+//       }
+//     });
+//   }
 
 // server stream
 // const NodeMediaServer = require('node-media-server');
