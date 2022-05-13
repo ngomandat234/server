@@ -78,12 +78,23 @@ const addStudent = async(req,res,next) => {
     })
     await newStudent.save()
    res.json({message:"Check student Successfully"})
-
     }
     catch (err) {
         res.json({message:"Error"})
     }
 
 }
+const delStudent = (req,res,next) => {
+    let studentID = req.body.id
+    student.findOneAndRemove({id: studentID})
+    .then (()=>{
+        res.json({message:"Delete user Successfully"})
+    })
+    .catch ((err)=> {
+        res.status(500).json({error:err})
+        res.json({message:"An Error Occured"})
+    })
 
-module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent}
+}
+
+module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent,delStudent}

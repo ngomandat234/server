@@ -12,11 +12,12 @@ const path = require("path")
 const cookieParser = require('cookie-parser')
 const PORT = process.env.PORT || 3001
 const mongoose = require('mongoose');
-const URI = 'mongodb://localhost:27017/testdb'
-const options = {
-  key: fs.readFileSync('C:/Users/lemin/key.pem'),
-  cert: fs.readFileSync('C:/Users/lemin/cert.pem')
-}; 
+//const URI = 'mongodb://localhost:27017/testdb'
+const URI = 'mongodb+srv://1111:1234@mernprojectceec.byvhv.mongodb.net/MERN_PROJECTCEEC?retryWrites=true&w=majority' 
+// const options = {
+//   key: fs.readFileSync('C:/Users/lemin/key.pem'),
+//   cert: fs.readFileSync('C:/Users/lemin/cert.pem')
+// }; 
 //var server = require("https").Server(options,app)
 var server = require("http").Server(app)
 mongoose
@@ -50,7 +51,6 @@ app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/user',express.static(path.join(__dirname, 'public')));
 app.set('view engine','ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs')
 const db = require("./models");
 const Role = db.roleUser;
 // function InitRole() {

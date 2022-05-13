@@ -3,9 +3,76 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
+    <script type="text/javascript" src="jquery.js"></script>
+    <link rel="stylesheet" href="module/bootstrap/dist/css/bootstrap.min.css">
+    <script src="module/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link href="basicUser.css" rel="stylesheet">
+    <script type="text/javascript" src="basicUser.js"></script>
+    <title>User page</title>
   </head>
   <body>
-    <h1>User page</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Subject</th>
+          <th scope="col">Teacher</th>
+          <th scope="col">Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if(studentList.length){
+          for(var i = 0; i< studentList.length; i++) {%>  
+          <tr>
+            <th scope="row"><%= (i+1) %></th>
+            <th><%=studentList[i].id%></th>
+            <td><%=studentList[i].name%></td>
+            <td><%=studentList[i].subject%></td>
+            <td><%=studentList[i].teacher%></td>
+            <td><%=studentList[i].time%></td>
+          </tr>
+          <% }
+                   
+           }else{ %>
+               <tr>
+                  <td colspan="3">No student</td>
+               </tr>
+            <% } %>      
+      </tbody>
+    </table>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+        <form class="form">   
+          <label for="name" class="mt-1 form-label" >Add student:</label><br />
+          <input type="text" id="name" placeholder="Name" class="form-control" required /><br />
+          <input type="text" id="id" placeholder="ID" class="form-control" required /><br />
+          <input type="text" id="subject" placeholder="Subject" class="form-control"  /><br />
+          <input type="text" id="teacher" placeholder="Teacher" class="form-control"  /> <br />
+          <input type="text" id="time" placeholder="Time" class="form-control" /><br />
+          <button class="btn btn-lg btn-primary btn-block " type="submit">Add student</button>
+        </form>
+        </div>
+        <div class="col-sm">
+          <form class="delForm" id="delForm">   
+            <label for="name" class="mt-1 form-label" >Delete student:</label><br />
+            <input type="text" id="delId" placeholder="ID" class="form-control" required /> 
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Delete student</button>
+          </form>
+          <form class="updtForm"> 
+            <label for="name" class="mt-1 form-label" >Update student:</label><br />
+            <input type="text" id="updateId" placeholder="ID" class="form-control" required /> 
+            <input type="text" id="updateName" placeholder="Name" class="form-control"  />
+            <input type="text" id="updateSubject" placeholder="Subject" class="form-control" />
+            <input type="text" id="updateTeacher" placeholder="Teacher" class="form-control"  /> 
+            <input type="text" id="updateTime" placeholder="Time" class="form-control"  />
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Update student</button><br />
+          </form>
+          </div>
+      </div>
+    </div>
   </body>
 </html>
