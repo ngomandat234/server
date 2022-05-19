@@ -101,5 +101,14 @@ const addSensor = async(req,res,next) => {
     }
 
 }
+const showSensor = async(req,res,next) => {
+       sensor.find()
+        .then ((respond)=>{
+            res.status(200).json(respond)
+        })
+        .catch ((err)=> {
+            res.status(500).json({error:err})
+        })
+    }
 
-module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent,addSensor}
+module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent,addSensor,showSensor}
