@@ -17,8 +17,8 @@ const options = {
   key: fs.readFileSync('C:/Users/lemin/key.pem'),
   cert: fs.readFileSync('C:/Users/lemin/cert.pem')
 }; 
-var server = require("https").Server(options,app)
-//var server = require("http").Server(app)
+//var server = require("https").Server(options,app)
+var server = require("http").Server(app)
 mongoose
 .connect(URI, {useNewUrlParser:true, useUnifiedTopology:true})
 .then(()=>{
