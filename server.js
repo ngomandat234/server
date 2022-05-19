@@ -14,10 +14,10 @@ const PORT = process.env.PORT || 3001
 const mongoose = require('mongoose');
 const URI = 'mongodb://localhost:27017/testdb'
 // const options = {
-//   key: fs.readFileSync('C:/Users/lemin/key.pem'),
+//   key: fs.readFileSync("/"),
 //   cert: fs.readFileSync('C:/Users/lemin/cert.pem')
 // }; 
-//var server = require("https").Server(options,app)
+// var server = require("https").Server(options,app)
 var server = require("http").Server(app)
 mongoose
 .connect(URI, {useNewUrlParser:true, useUnifiedTopology:true})
