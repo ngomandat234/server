@@ -86,6 +86,18 @@ const addStudent = async(req,res,next) => {
     }
 
 }
+const delStudent = (req,res,next) => {
+    let studentID = req.body.id
+    student.findOneAndRemove({id: studentID})
+    .then (()=>{
+        res.json({message:"Delete user Successfully"})
+    })
+    .catch ((err)=> {
+        res.status(500).json({error:err})
+        res.json({message:"An Error Occured"})
+    })
+
+}
 const addSensor = async(req,res,next) => {
     try{
     const newSensor = new sensor({
@@ -111,4 +123,4 @@ const showSensor = async(req,res,next) => {
         })
     }
 
-module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent,addSensor,showSensor}
+module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent,delStudent,addSensor,showSensor}

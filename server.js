@@ -5,7 +5,6 @@ const app = express()
 var io = require("socket.io")(server)
 var fs = require('fs');
 const user = require('./routers/user')
-const aa = "sdsdd"
 const authUser = require('./routers/auth')
 //const authUser = require('./routers/auth')(aa)
 const path = require("path")
