@@ -6,21 +6,24 @@ var io = require("socket.io")(server)
 var fs = require('fs');
 const user = require('./routers/user')
 const aa = "sdsdd"
+const config = require("config")
+const dbConfig = config.get("Cluster0.dbConfig.dbName")
 const authUser = require('./routers/auth')
 //const authUser = require('./routers/auth')(aa)
 const path = require("path")
 const cookieParser = require('cookie-parser')
 const PORT = process.env.PORT ||  3001
 const mongoose = require('mongoose');
-const URI = 'mongodb://localhost:27017/testdb'
+//const URI = 'mongodb://localhost:27017/testdb'
+const URI = 'mongodb+srv://ngomandat234:0939339964dat@cluster0.acui9.mongodb.net/?retryWrites=true&w=majority'
 // const options = {
-//   key: fs.readFileSync("/"),
+//   key: fs.readFileSync("C:/Users/lemin/key.pem"),
 //   cert: fs.readFileSync('C:/Users/lemin/cert.pem')
 // }; 
 // var server = require("https").Server(options,app)
 var server = require("http").Server(app)
 mongoose
-.connect(URI, {useNewUrlParser:true, useUnifiedTopology:true})
+.connect(URI, {dbConfig,suseNewUrlParser:true, useUnifiedTopology:true})
 .then(()=>{
     console.log("Connect to db")
     //InitRole()

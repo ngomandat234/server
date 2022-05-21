@@ -1,0 +1,9 @@
+{
+    "Cluster0": {
+      "dbConfig": {
+        "host": "localhost",
+        "port": 5984,
+        "dbName": "mongodb+srv://ngomandat234:0939339964dat@cluster0.acui9.mongodb.net/?retryWrites=true&w=majority"
+      }
+    }
+  }
