@@ -31,7 +31,7 @@
     "id-auto-increment": "^1.0.1",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.2.11",
+    "mongoose": "^6.3.4",
     "mongoose-schema-jsonschema": "^2.0.2",
     "morgan": "^1.10.0",
     "node-media-server": "^2.3.9",

@@ -12,7 +12,8 @@ const path = require("path")
 const cookieParser = require('cookie-parser')
 const PORT = process.env.PORT ||  3001
 const mongoose = require('mongoose');
-const URI = 'mongodb://localhost:27017/testdb'
+//const URI = 'mongodb://localhost:27017/testdb'
+const URI = 'mongodb+srv://1111:1234@mernprojectceec.byvhv.mongodb.net/MERN_PROJECTCEEC?retryWrites=true&w=majority' 
 // const options = {
 //   key: fs.readFileSync("/"),
 //   cert: fs.readFileSync('C:/Users/lemin/cert.pem')
