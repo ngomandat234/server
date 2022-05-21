@@ -69,6 +69,7 @@ const deleteUser = (req,res,next) => {
 }
 
 const addStudent = async(req,res,next) => {
+    console.log(req.body.name);
     try{
     const newStudent = new student({
         name : req.body.name,
@@ -79,7 +80,6 @@ const addStudent = async(req,res,next) => {
     })
     await newStudent.save()
    res.json({message:"Check student Successfully"})
-
     }
     catch (err) {
         res.json({message:err})

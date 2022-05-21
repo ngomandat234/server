@@ -25,7 +25,7 @@ router.post("/update", user.updateUser)
 router.post("/delete", user.deleteUser)
 router.post("/add", user.addUser)
 router.post('/attendance',user.addStudent)
-router.post('/deleteAttendence', user.delStudent)
+router.post('/deleteAttendance', user.delStudent)
 router.post('/addSensor',user.addSensor)
 router.get('/showSensor',user.showSensor)
 module.exports = router

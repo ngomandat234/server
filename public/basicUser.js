@@ -10,12 +10,11 @@ $(document).ready(function () {
     form.addEventListener('submit', async (e) => {
        e.preventDefault()     
        try {
-         const res = await fetch('/user/attendence', {
+         const res = await fetch('/user/attendance', {
          method: 'POST',
          body: JSON.stringify({ name: name.value , id: id.value, subject: subject.value, teacher:teacher.value, time:time.value}),
          headers: { 'Content-Type': 'application/json' }
          })   
-         console.log(name.value);
           } catch (err) {
             console.log(err.message)
           }
@@ -23,14 +22,32 @@ $(document).ready(function () {
     delForm.addEventListener('submit', async (e) => {
         e.preventDefault()     
         try {
-            const res = await fetch('/user/deleteAttendence', {
+            const res = await fetch('/user/deleteAttendance', {
              method: 'POST',
              body: JSON.stringify({id: delId.value}),
              headers: { 'Content-Type': 'application/json' }
              }) 
-             console.log(delId.value);  
               } catch (err) {
                 console.log(err.message)
               }
              })
+             
+    // display.textContent = ''
+    const logOut = document.getElementById("buttonID")
+    logOut.addEventListener("click", async(e)=> {
+     e.preventDefault()
+     try {
+         await fetch('/auth/logout', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' }
+         })
+       //const data = await res.json()
+       window.location.href = "http://localhost:3001/user/login";
+     }
+       catch(err){
+         throw err
+     }
+     // e.clearCookie("token")
+     // window.location.href = "http://localhost:3001/user/login";
+   })
 })

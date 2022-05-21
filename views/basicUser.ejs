@@ -79,24 +79,7 @@
           <button class="btn btn-lg btn-primary btn-block" id="buttonID">Log Out</button><br />
            </form>
            <script>
-             // display.textContent = ''
-              const logOut = document.getElementById("buttonID")
-              logOut.addEventListener("click", async(e)=> {
-               e.preventDefault()
-               try {
-                   await fetch('/auth/logout', {
-                   method: 'POST',
-                   headers: { 'Content-Type': 'application/json' }
-                   })
-                 //const data = await res.json()
-                 window.location.href = "http://localhost:3001/user/login";
-               }
-                 catch(err){
-                   throw err
-               }
-               // e.clearCookie("token")
-               // window.location.href = "http://localhost:3001/user/login";
-             })
+             
            </script>
   </body>
 </html>
