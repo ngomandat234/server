@@ -23,7 +23,8 @@ const URI = 'mongodb+srv://ngomandat234:0939339964dat@cluster0.acui9.mongodb.net
 // var server = require("https").Server(options,app)
 var server = require("http").Server(app)
 mongoose
-.connect(URI, {dbConfig,suseNewUrlParser:true, useUnifiedTopology:true})
+//.connect(URI, {dbConfig,useNewUrlParser:true, useUnifiedTopology:true})
+.connect(URI, {useNewUrlParser:true, useUnifiedTopology:true})
 .then(()=>{
     console.log("Connect to db")
     //InitRole()
