@@ -2,10 +2,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
-var io = require("socket.io")(server)
+const map = require("./models/map")
 var fs = require('fs');
 const user = require('./routers/user')
-const aa = "sdsdd"
 const config = require("config")
 const dbConfig = config.get("Cluster0.dbConfig.dbName")
 const authUser = require('./routers/auth')
@@ -15,13 +14,27 @@ const cookieParser = require('cookie-parser')
 const PORT = process.env.PORT ||  3001
 const mongoose = require('mongoose');
 //const URI = 'mongodb://localhost:27017/testdb'
-const URI = 'mongodb+srv://ngomandat234:0939339964dat@cluster0.acui9.mongodb.net/?retryWrites=true&w=majority'
+//const URI = 'mongodb+srv://ngomandat234:0939339964dat@cluster0.acui9.mongodb.net/?retryWrites=true&w=majority'
+const URI = 'mongodb+srv://1111:1234@mernprojectceec.byvhv.mongodb.net/MERN_PROJECTCEEC?retryWrites=true&w=majority' 
 // const options = {
 //   key: fs.readFileSync("C:/Users/lemin/key.pem"),
 //   cert: fs.readFileSync('C:/Users/lemin/cert.pem')
 // }; 
 // var server = require("https").Server(options,app)
 var server = require("http").Server(app)
+var io = require("socket.io")(server)
+
+io.on('connection', function (socket) {
+    console.log('connected');
+});
+
+const changeStream = map.watch();
+
+changeStream.on('change', (change) => {
+    console.log(change); // You could parse out the needed info and send only that data. 
+    io.emit('changeData', change);
+}); 
+
 mongoose
 //.connect(URI, {dbConfig,useNewUrlParser:true, useUnifiedTopology:true})
 .connect(URI, {useNewUrlParser:true, useUnifiedTopology:true})
