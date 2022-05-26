@@ -2,9 +2,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
-var io = require("socket.io")(server)
+const student = require('./models/attedence')
 var fs = require('fs');
-const user = require('./routers/user')
 const authUser = require('./routers/auth')
 //const authUser = require('./routers/auth')(aa)
 const path = require("path")
@@ -19,6 +18,8 @@ const URI = 'mongodb+srv://1111:1234@mernprojectceec.byvhv.mongodb.net/MERN_PROJ
 // }; 
 // var server = require("https").Server(options,app)
 var server = require("http").Server(app)
+var io = require("socket.io")(server)
+const user = require('./routers/user')
 mongoose
 .connect(URI, {useNewUrlParser:true, useUnifiedTopology:true})
 .then(()=>{
@@ -53,6 +54,19 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs')
 const db = require("./models");
 const Role = db.roleUser;
+
+io.on('connection', function (socket) {
+    console.log('connected');
+});
+
+const changeStream = student.watch();
+
+changeStream.on('change', (change) => {
+    student.find({},function(err, students){
+    console.log(change); // You could parse out the needed info and send only that data. 
+    io.emit('changeData', students);
+    })
+}); 
 // function InitRole() {
 //     Role.estimatedDocumentCount((err, count) => {
 //       if (!err && count === 0) {

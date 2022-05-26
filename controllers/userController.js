@@ -1,6 +1,7 @@
 const user = require('../models/userModel')
 const student = require('../models/attedence')
 const sensor = require('../models/sensor')
+const rfid = require('../models/rfid')
 const findUserData = (req,res,next)=>{
     user.find()
     .then ((respond)=>{
@@ -122,5 +123,28 @@ const showSensor = async(req,res,next) => {
             res.status(500).json({error:err})
         })
     }
-
-module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent,delStudent,addSensor,showSensor}
+const addRfid = async(req,res,next) => {
+        try{
+        const newRfid = new rfid({
+            time : req.body.time,
+            id: req.body.id
+        })
+        await newRfid.save()
+       res.json({message:"Add ID Rfid Successfully"})
+    
+        }
+        catch (err) {
+            res.json({message:"Error"})
+        }
+    
+    }
+const showRfid = async(req,res,next) => {
+           rfid.find()
+            .then ((respond)=>{
+                res.status(200).json(respond)
+            })
+            .catch ((err)=> {
+                res.status(500).json({error:err})
+            })
+        }
+module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent,delStudent,addSensor,showSensor, addRfid, showRfid}

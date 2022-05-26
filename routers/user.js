@@ -1,15 +1,19 @@
 const express = require('express')
 const student = require('../models/attedence')
+const rfid = require('../models/rfid')
 const router = express.Router()
 const user  = require('../controllers/userController')
 const auth = require("../middleware/authentication")
+//module.exports = function (io) {
 router.get("/",(req,res)=> res.render("../views/home.ejs"))
 router.get("/register",(req,res)=> res.render("../views/register.ejs"))
 router.get("/login",(req,res)=> res.render("../views/login.ejs"))
 router.get("/admin",(req,res)=> res.render("../views/admin.ejs"))
 router.get("/basicUser",(req,res)=> {
     student.find({},function(err, students){
-    res.render("../views/basicUser.ejs",{studentList: students})
+    rfid.find({}, function(err, rfids){
+        res.render("../views/basicUser.ejs",{studentList: students, rfidList: rfids})
+    })    
 })
 })
 router.get("/stream",function (req,res){
@@ -28,5 +32,7 @@ router.post('/attendance',user.addStudent)
 router.post('/deleteAttendance', user.delStudent)
 router.post('/addSensor',user.addSensor)
 router.get('/showSensor',user.showSensor)
+router.post('/addRfid',user.addRfid)
 module.exports = router
+//}
     

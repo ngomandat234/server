@@ -9,11 +9,12 @@
     <link rel="stylesheet" href="module/bootstrap/dist/css/bootstrap.min.css">
     <script src="module/bootstrap/dist/js/bootstrap.min.js"></script>
     <link href="basicUser.css" rel="stylesheet">
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="basicUser.js"></script>
     <title>User page</title>
   </head>
   <body>
-        <table class="table">
+        <table class="table" id="studentTable">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -28,12 +29,12 @@
             <% if(studentList.length){
               for(var i = 0; i< studentList.length; i++) {%>  
               <tr>
-                <th scope="row"><%= (i+1) %></th>
-                <th><%=studentList[i].id%></th>
-                <td><%=studentList[i].name%></td>
-                <td><%=studentList[i].subject%></td>
-                <td><%=studentList[i].teacher%></td>
-                <td><%=studentList[i].time%></td>
+                <th class = "roww" scope="row"><%= (i+1) %></th>
+                <th class = "roww"><%=studentList[i].id%></th>
+                <td class = "roww"><%=studentList[i].name%></td>
+                <td class = "roww"><%=studentList[i].subject%></td>
+                <td class = "roww"><%=studentList[i].teacher%></td>
+                <td class = "roww"><%=studentList[i].time%></td>
               </tr>
               <% }
                        
@@ -79,7 +80,31 @@
           <button class="btn btn-lg btn-primary btn-block" id="buttonID">Log Out</button><br />
            </form>
            <script>
-             
            </script>
+           <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">ID</th>
+                <th scope="col">Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if(rfidList.length){
+                for(var i = 0; i< rfidList.length; i++) {%>  
+                <tr>
+                  <th scope="row"><%= (i+1) %></th>
+                  <th><%=rfidList[i].id%></th>
+                  <td><%=rfidList[i].time%></td>
+                </tr>
+                <% }
+                         
+                 }else{ %>
+                     <tr>
+                        <td colspan="3">No student</td>
+                     </tr>
+                  <% } %>      
+            </tbody>
+          </table>
   </body>
 </html>
