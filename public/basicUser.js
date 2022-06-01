@@ -13,20 +13,23 @@ $(document).ready(function () {
       // Handle Output
       socket.on('changeData', function(data){
           $('#studentTable').empty()
-                  $('#studentTable').append(`<tr>
-                    <th scope="col">#</th>
+                  $('#studentTable').append(`
+                  <thead class="thead">
+                  <tr>
+                    <th scope="col">No.</th>
                     <th scope="col">ID</th>
                     <th scope="col">Name</th>
                     <th scope="col">Subject</th>
                     <th scope="col">Teacher</th>
                     <th scope="col">Time</th>
-                  </tr>`)
+                  </tr>
+                  </thead>
+                  <tbody>`)
           if(data.length){       
               for(var x = 0;x < data.length;x++){
-                  console.log("hehe  ");
                   $('#studentTable').append(`<tr>
-                  <th>${(x+1)}</th>
-                  <th>${data[x].id}</th>
+                  <th scope="row">${(x+1)}</th>
+                  <td>${data[x].id}</td>
                   <td>${data[x].name}</td>
                   <td>${data[x].subject}</td>
                   <td>${data[x].teacher}</td>
@@ -37,6 +40,7 @@ $(document).ready(function () {
           <td colspan="3">${'There no one at all'}</td>
          </tr>`)
           }
+          $('#studentTable').append(`</tbody>`)
       });
   }
     form.addEventListener('submit', async (e) => {
@@ -82,4 +86,25 @@ $(document).ready(function () {
      // e.clearCookie("token")
      // window.location.href = "http://localhost:3001/user/login";
    })
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+    for (i = 0; i < acc.length; i++) {
+    acc[i].nextElementSibling.style.display = "none"
+    }
+    for (i = 0; i < acc.length; i++) {
+      acc[i].addEventListener("click", function() {
+        /* Toggle between adding and removing the "active" class,
+        to highlight the button that controls the panel */
+        this.classList.toggle("active");
+
+        /* Toggle between hiding and showing the active panel */
+        var panel = this.nextElementSibling;
+        if (panel.style.display === "block") {
+          panel.style.display = "none";
+        } else {
+          panel.style.display = "block";
+        }
+
+      });
+    }
 })

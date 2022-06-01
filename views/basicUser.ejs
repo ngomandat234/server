@@ -14,10 +14,25 @@
     <title>User page</title>
   </head>
   <body>
-        <table class="table" id="studentTable">
-          <thead>
+    <nav class="navbar navbar-expand-md navbar-fixed-top navbar-blue main-nav">
+      <div class="container">
+      <a class="navbar-item h5 " href="/user/">HOME</a>
+      
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+            <div class="btn-nav"><button class="btn btn-primary" id="buttonID">Log Out</button><br />
+            </div>
+        </li>
+    </ul>
+    </nav>
+  </div>
+
+    <p style="text-align:center;"><img class="header-center" src="Header_Page_newBG.png" alt="" width="600" height="140"> </p>
+
+        <table class="table table-bordered table-striped table-responsive-stack" id="studentTable">  
+          <thead class="thead">
             <tr>
-              <th scope="col">#</th>
+              <th scope="col">No.</th>
               <th scope="col">ID</th>
               <th scope="col">Name</th>
               <th scope="col">Subject</th>
@@ -29,12 +44,12 @@
             <% if(studentList.length){
               for(var i = 0; i< studentList.length; i++) {%>  
               <tr>
-                <th class = "roww" scope="row"><%= (i+1) %></th>
-                <th class = "roww"><%=studentList[i].id%></th>
-                <td class = "roww"><%=studentList[i].name%></td>
-                <td class = "roww"><%=studentList[i].subject%></td>
-                <td class = "roww"><%=studentList[i].teacher%></td>
-                <td class = "roww"><%=studentList[i].time%></td>
+                <th scope="row"><%= (i+1) %></th>
+                <td ><%=studentList[i].id%></td>
+                <td ><%=studentList[i].name%></td>
+                <td ><%=studentList[i].subject%></td>
+                <td ><%=studentList[i].teacher%></td>
+                <td ><%=studentList[i].time%></td>
               </tr>
               <% }
                        
@@ -45,46 +60,44 @@
                 <% } %>      
           </tbody>
         </table>
+
         <div class="container">
           <div class="row">
             <div class="col-sm">
+            <button class="accordion mb-2">Add student:</button>
             <form class="form">   
-              <label for="name" class="mt-1 form-label" >Add student:</label><br />
-              <input type="text" id="name" placeholder="Name" class="form-control" required /><br />
+              <!-- <label for="name" class="mt-1 form-label" >Add student:</label><br /> -->
+              <input type="text" id="name" placeholder="Name" class="form-control " required /><br />
               <input type="text" id="id" placeholder="ID" class="form-control" required /><br />
               <input type="text" id="subject" placeholder="Subject" class="form-control"  /><br />
               <input type="text" id="teacher" placeholder="Teacher" class="form-control"  /> <br />
               <input type="text" id="time" placeholder="Time" class="form-control" /><br />
-              <button class="btn btn-lg btn-primary btn-block " type="submit">Add student</button>
+              <button class="btn btn-lg btn-primary btn-block mb-3" id="buttonAdd" type="submit">Add student</button>
             </form>
             </div>
             <div class="col-sm">
+              <button class="accordion mb-2">Delete student:</button>
               <form class="delForm" id="delForm">   
-                <label for="name" class="mt-1 form-label" >Delete student:</label><br />
                 <input type="text" id="delId" placeholder="ID" class="form-control" required /> 
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Delete student</button>
+                <button class="btn btn-lg btn-primary btn-block mb-3" id="buttonDl" type="submit">Delete student</button>
               </form>
+              <button class="accordion mb-2">Update student:</button>
               <form class="updtForm"> 
-                <label for="name" class="mt-1 form-label" >Update student:</label><br />
                 <input type="text" id="updateId" placeholder="ID" class="form-control" required /> 
                 <input type="text" id="updateName" placeholder="Name" class="form-control"  />
                 <input type="text" id="updateSubject" placeholder="Subject" class="form-control" />
                 <input type="text" id="updateTeacher" placeholder="Teacher" class="form-control"  /> 
                 <input type="text" id="updateTime" placeholder="Time" class="form-control"  />
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Update student</button><br />
+                <button class="btn btn-lg btn-primary btn-block" id="buttonUd" type="submit">Update student</button><br />
               </form>
               </div>
           </div>
+          
         </div>
-        <form >
-          <button class="btn btn-lg btn-primary btn-block" id="buttonID">Log Out</button><br />
-           </form>
-           <script>
-           </script>
-           <table class="table">
+           <!-- <table class="table">
             <thead>
               <tr>
-                <th scope="col">#</th>
+                <th scope="col">No.</th>
                 <th scope="col">ID</th>
                 <th scope="col">Time</th>
               </tr>
@@ -104,7 +117,7 @@
                         <td colspan="3">No student</td>
                      </tr>
                   <% } %>      
-            </tbody>
-          </table>
+            </tbody> --> -->
+          <!-- </table>
   </body>
 </html>
