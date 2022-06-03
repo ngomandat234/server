@@ -1,7 +1,9 @@
-/node_modules
-/views
-/config
-/controllers
-/models
-/middleware
-/public
+node_modules
+config
+controllers
+models
+middleware
+public
+static
+utils
+procfile

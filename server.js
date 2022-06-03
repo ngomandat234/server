@@ -1,42 +1,42 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const cors = require('cors')
-const app = express()
-// var io = require("socket.io")(server)
-var fs = require('fs');
-var mqtt = require('mqtt')
-const user = require('./routers/user')
-const mapTest = require("./models/mapTest")
-const aa = "sdsdd"
-//const config = require("config")
-//const dbConfig = config.get("Cluster0.dbConfig.dbName")
-const markers = []
-const authUser = require('./routers/auth')
-//const authUser = require('./routers/auth')(aa)
-const path = require("path")
-const cookieParser = require('cookie-parser')
-const PORT = process.env.PORT ||  3001
-const mongoose = require('mongoose');
+// const express = require('express')
+// const bodyParser = require('body-parser')
+// const cors = require('cors')
+// const app = express()
+// // var io = require("socket.io")(server)
+// var fs = require('fs');
+// var mqtt = require('mqtt')
+// const user = require('./routers/user')
+// const mapTest = require("./models/mapTest")
+// const aa = "sdsdd"
+// //const config = require("config")
+// //const dbConfig = config.get("Cluster0.dbConfig.dbName")
+// const markers = []
+// const authUser = require('./routers/auth')
+// //const authUser = require('./routers/auth')(aa)
+// const path = require("path")
+// const cookieParser = require('cookie-parser')
+//  const PORT = process.env.PORT ||  3001
+// const mongoose = require('mongoose');
 //const URI = 'mongodb://localhost:27017/testdb'
-const URI = 'mongodb+srv://ngomandat234:0939339964dat@cluster0.acui9.mongodb.net/?retryWrites=true&w=majority'
-// const options = {
-//   key: fs.readFileSync("C:/Users/lemin/key.pem"),
-//   cert: fs.readFileSync('C:/Users/lemin/cert.pem')
-// }; 
-// var server = require("https").Server(options,app)
-var server = require("http").Server(app)
-mongoose
-//.connect(URI, {dbConfig,useNewUrlParser:true, useUnifiedTopology:true})
-.connect(URI, {useNewUrlParser:true, useUnifiedTopology:true})
-.then(()=>{
-    console.log("Connect to db")
-    //InitRole()
-    server.listen(PORT,()=>{
-        console.log(`Server is listening on port ${PORT}`)
-    })
-}).catch((err) => {
-    console.log(err)
-})
+// const URI = 'mongodb+srv://ngomandat234:0939339964dat@cluster0.acui9.mongodb.net/?retryWrites=true&w=majority'
+// // const options = {
+// //   key: fs.readFileSync("C:/Users/lemin/key.pem"),
+// //   cert: fs.readFileSync('C:/Users/lemin/cert.pem')
+// // }; 
+// // var server = require("https").Server(options,app)
+// var server = require("http").Server(app)
+// mongoose
+// //.connect(URI, {dbConfig,useNewUrlParser:true, useUnifiedTopology:true})
+// .connect(URI, {useNewUrlParser:true, useUnifiedTopology:true})
+// .then(()=>{
+//     console.log("Connect to db")
+//     //InitRole()
+//     server.listen(PORT,()=>{
+//         console.log(`Server is listening on port ${PORT}`)
+//     })
+// }).catch((err) => {
+//     console.log(err)
+// })
 // const io = require("socket.io")(server);
 // var options = {
 //     username: "ZKgWFER5h0Ymc9NL4rqkNtNgWFScfLb5mhPPJxKQly1nvEYpVcyxubBgGjgLVhG5",
@@ -96,30 +96,30 @@ mongoose
 //     //     socket.emit("marker",data)
 //     // })
 // })
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended:true, limit:"30mb" }))
-app.use("/static", express.static('./static'));
-//app.use(cors())
-app.use(cors({
-  origin: '*',
-  methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
-}));
-app.use('/user',user)
-app.use('/auth',authUser)
-app.use(cookieParser())
+// app.use(bodyParser.json())
+// app.use(bodyParser.urlencoded({extended:true, limit:"30mb" }))
+// app.use("/static", express.static('./static'));
+// //app.use(cors())
+// app.use(cors({
+//   origin: '*',
+//   methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
+// }));
+// app.use('/user',user)
+// app.use('/auth',authUser)
+// app.use(cookieParser())
 // app.engine('hbs', handlebars({
 //     extname : '.hbs',
 //     helpers: {
 //         sum: (a,b) => a+b
 //     }
 // }));
-app.use('/',express.static(path.join(__dirname, 'public')));
-app.use('/user',express.static(path.join(__dirname, 'public')));
-app.set('view engine','ejs');
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs')
-const db = require("./models");
-const Role = db.roleUser;
+// app.use('/',express.static(path.join(__dirname, 'public')));
+// app.use('/user',express.static(path.join(__dirname, 'public')));
+// app.set('view engine','ejs');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'ejs')
+// const db = require("./models");
+// const Role = db.roleUser;
 // function InitRole() {
 //     Role.estimatedDocumentCount((err, count) => {
 //       if (!err && count === 0) {
