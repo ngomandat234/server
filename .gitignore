@@ -1,7 +1,5 @@
 node_modules
 config
-controllers
-models
 middleware
 public
 static
