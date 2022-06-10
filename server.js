@@ -37,55 +37,55 @@ mongoose
 }).catch((err) => {
     console.log(err)
 })
-// const io = require("socket.io")(server);
-// var options = {
-//     username: "ZKgWFER5h0Ymc9NL4rqkNtNgWFScfLb5mhPPJxKQly1nvEYpVcyxubBgGjgLVhG5",
-//     password: "",
-//     clientId: "Node-client"
-//   }
-//   var client = mqtt.connect('mqtt://mqtt.flespi.io:1883', options)
+const io = require("socket.io")(server);
+var options = {
+    username: "ZKgWFER5h0Ymc9NL4rqkNtNgWFScfLb5mhPPJxKQly1nvEYpVcyxubBgGjgLVhG5",
+    password: "",
+    clientId: "Node-client"
+  }
+  var client = mqtt.connect('mqtt://mqtt.flespi.io:1883', options)
   
-//   client.on('connect', function () {
-//     client.subscribe('data/#', function (err) {
-//       if (!err) {
-//         client.publish('data/as/', 'Hello mqtt')
-//       }
-//     })
-//   })
-//   client.on('close',function(){
-//     console.log("connection closed")
-//   })
-//   client.on('message', function (topic, message) {
-//     // message is Buffer
-//   //  console.log(topic.toString())
-//    // console.log(message.toString())
-//     if(topic.toString() === "data/map"){
-//       var data = JSON.parse(message.toString());
-//      // console.log(data)
-//       var map = new mapTest({
-//         longtitude :  data.longtitude,
-//         latitude : data.latitude
-//       })
-//       console.log(map + "map ne")
-//       io.emit("newMapData", JSON.stringify(map));
-//       map.save((err) => {
-//         if(!err)
-//           console.log("save!!")
-//         else
-//           console.log("error")
-//       })
-//     }
-//     //   client.end()
-//   })
+  client.on('connect', function () {
+    client.subscribe('data/#', function (err) {
+      if (!err) {
+        client.publish('data/as/', 'Hello mqtt')
+      }
+    })
+  })
+  client.on('close',function(){
+    console.log("connection closed")
+  })
+  client.on('message', function (topic, message) {
+    // message is Buffer
+  //  console.log(topic.toString())
+   // console.log(message.toString())
+    if(topic.toString() === "data/map"){
+      var data = JSON.parse(message.toString());
+     // console.log(data)
+      var map = new mapTest({
+        longtitude :  data.longtitude,
+        latitude : data.latitude
+      })
+      console.log(map + "map ne")
+      io.emit("newMapData", JSON.stringify(map));
+      map.save((err) => {
+        if(!err)
+          console.log("save!!")
+        else
+          console.log("error")
+      })
+    }
+    //   client.end()
+  })
 
-//   io.on('connection', client => {
-//     // mapTest.find().limit(5).then((data)=>{
-//     //     io.emit("firstConnect", data)
-//     // })
-//     console.log("connect socketio")
+  io.on('connection', client => {
+    // mapTest.find().limit(5).then((data)=>{
+    //     io.emit("firstConnect", data)
+    // })
+    console.log("connect socketio")
      
-//     client.on('disconnect', () => { console.log("client connect: " + client.id) });
-//   });
+    client.on('disconnect', () => { console.log("client connect: " + client.id) });
+  });
 
 // io.on("connection", socket =>{
 //     for(let i=0; i < markers.length; i++){
