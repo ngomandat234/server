@@ -2,22 +2,16 @@
   <head>
     <meta charset="utf-8" />
     <title>LeafletJS - OpenStreetMap API by Seth Phat</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
-      integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
-      crossorigin=""
-    />
-    <script
-      src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
-      integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
-      crossorigin=""
-    ></script>
-    <script
-      src="https://cdn.socket.io/4.5.0/socket.io.min.js"
-      integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k"
-      crossorigin="anonymous"
-    ></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" 
+                          integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" 
+                          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" 
+                          integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" 
+                          crossorigin=""></script>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"
+                          integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k"
+                          crossorigin=""></script>
+    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
@@ -57,25 +51,24 @@
   <body>
     <div id="sethPhatMap"></div>
   </body>
-
   <script>
-     const socket = io("http://localhost:3001");
+    var socket = io.connect("http://localhost:3001");
     var mapObj = null;
-    var defaultCoord = [10.870231, 106.800836]; // coord mặc định, 9 giữa HCMC
-    var zoomLevel = 13;
+    var defaultCoord = [10.869948, 106.803079]; // coord mặc định, 9 giữa HCMC
+    var zoomLevel = 16;
     var mapConfig = {
     	attributionControl: false, // để ko hiện watermark nữa, nếu bị liên hệ đòi thì nhớ open nha
     	center: defaultCoord, // vị trí map mặc định hiện tại
     	zoom: zoomLevel, // level zoom
     };
-    
-
+    //$(document).ready(function () {
     window.onload = async function() {
     	// init map
     	mapObj = L.map('sethPhatMap', mapConfig);
 
     	// add tile để map có thể hoạt động, xài free từ OSM
     	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
     		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     	}).addTo(mapObj);
 
@@ -92,35 +85,70 @@
       // })
   //  	var marker = addMarker([10.870230674743652,106.80083465576172], `<div class='left'><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1SGNN50inDZcOweium4llf4qacFBFgBK9sXW7fxQ_lBm6-Abcww' /></div><div class='right'><b>Đây có gì hot?</b><br>Đây là vị trí của bạn nè</div><div class='clearfix'></div>`, popupOption);
     	//var marker1 = addMarker([106.80001831054688, 10.870362281799316], `<div class='left'><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1SGNN50inDZcOweium4llf4qacFBFgBK9sXW7fxQ_lBm6-Abcww' /></div><div class='right'><b>Đây có gì hot?</b><br>Đây là vị trí của bạn nè</div><div class='clearfix'></div>`, popupOption);
-    };
+      var dataLatlng = [
+        {
+            lat: 10.869343, 
+            lng: 106.802419,
+            time: "15p" 
+        },
+        {
+            lat: 10.869272, 
+            lng: 106.803194,
+            time: "15p" 
+        },        {
+            lat: 10.869298,
+            lng: 106.80365,
+            time: "15p" 
+        },
+    ]
+    let travelPath, circle, marker ;
+    function addLine(){
+      let pointList = [];
+        dataLatlng.map((data) => pointList.push(new L.LatLng(data.lat,data.lng)))
+        travelPath = new L.Polyline(pointList, {
+            color: 'green',
+            weight: 10,
+            opacity: 1,
+            smoothFactor: 1
+        }).addTo(mapObj);
 
-    function addMarker(coord, popupContent, popupOptionObj, markerObj) {
-    	if (!popupOptionObj) {
-    		popupOptionObj = {};
-    	}
-    	if (!markerObj) {
-    		markerObj = {};
-    	}
-
-    	var marker = L.marker(coord, markerObj).addTo(mapObj); // chơi liều @@
-    	var popup = L.popup(popupOptionObj);
-    	popup.setContent(popupContent);
-
-    	// binding
-    	marker.bindPopup(popup);
-
-    	return marker;
+        // circle at check point
+        pointList.map((data,index) => {
+            circle = L.circle([data.lat, data.lng], {
+                color: 'green',
+                fillColor: 'green',
+                fillOpacity: 0.5,
+                radius: 10
+            }).addTo(mapObj).bindPopup(dataLatlng[index].time);
+        })
+        // car icon
+        let carIcon = L.icon({
+            iconUrl: "./car.png",
+            iconSize: [70, 70]
+        })
+        marker = L.marker(
+            [pointList[pointList.length-1].lat, pointList[pointList.length-1].lng],
+            {
+                icon: carIcon
+            }
+        ).addTo(mapObj).bindPopup(dataLatlng[dataLatlng.length- 1].time);  
     }
-    function removeMarker(coord){ 
-      var marker = L.marker(coord).addTo(mapObj); 
-  	 //marker.addTo(map);
-      marker.remove();
-      console.log(JSON.stringify(marker) + "remove marker ne")
-    	return marker;
+    function removeLine(){
+        mapObj.removeLayer(travelPath);
+        mapObj.removeLayer(circle);
+        mapObj.removeLayer(marker);
+      }
+      addLine();
+      // when click
+    function onMapClick(e) {	
+          let popup = L.popup();
+      popup
+        .setLatLng(e.latlng)
+        .setContent(e.latlng.toString())
+        .openOn(mapObj);
     }
-
-
-    
+    mapObj.on('click', onMapClick);
+  //};
     socket.on("newMapData", (data) => {
      // Update(data.longtitude, data.latitude);
      var popupOption = {
@@ -129,8 +157,19 @@
      console.log(data + "data ne")
      var dataMap = JSON.parse(data)
      console.log( "data map ne" + dataMap.longtitude)
-    addMarker([dataMap.latitude, dataMap.longtitude], `<div class='left'><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1SGNN50inDZcOweium4llf4qacFBFgBK9sXW7fxQ_lBm6-Abcww' /></div><div class='right'><b>Đạt Đẹp Troai</b><br>Đây là vị trí của bạn nè</div><div class='clearfix'></div>`, popupOption)
-   removeMarker([dataMap.latitude, dataMap.longtitude]);
+     dataLatlng.splice(dataLatlng.length,0, {
+            lat: dataMap.latitude,
+            lng: dataMap.longtitude,
+            time: dataMap.Time 
+        })
+      console.log(dataLatlng);
+      removeLine();
+      addLine();
+    // addMarker([dataMap.latitude, dataMap.longtitude], `<div class='left'><img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1SGNN50inDZcOweium4llf4qacFBFgBK9sXW7fxQ_lBm6-Abcww' /></div><div class='right'><b>Đạt Đẹp Troai</b><br>Đây là vị trí của bạn nè</div><div class='clearfix'></div>`, popupOption)
+  //  removeMarker([dataMap.latitude, dataMap.longtitude]);
   })
+    //new
+  //})
+}
   </script>
 </html>

@@ -7,18 +7,18 @@ var fs = require('fs');
 var mqtt = require('mqtt')
 const user = require('./routers/user')
 const mapTest = require("./models/mapTest")
-const aa = "sdsdd"
 //const config = require("config")
 //const dbConfig = config.get("Cluster0.dbConfig.dbName")
 const markers = []
 const authUser = require('./routers/auth')
-//const authUser = require('./routers/auth')(aa)
 const path = require("path")
 const cookieParser = require('cookie-parser')
  const PORT = process.env.PORT ||  3001
 const mongoose = require('mongoose');
+const { date } = require('joi');
 //const URI = 'mongodb://localhost:27017/testdb'
-const URI = 'mongodb+srv://ngomandat234:0939339964dat@cluster0.acui9.mongodb.net/?retryWrites=true&w=majority'
+//const URI = 'mongodb+srv://ngomandat234:0939339964dat@cluster0.acui9.mongodb.net/?retryWrites=true&w=majority'
+const URI = 'mongodb+srv://1111:1234@mernprojectceec.byvhv.mongodb.net/MERN_PROJECTCEEC?retryWrites=true&w=majority' 
 // const options = {
 //   key: fs.readFileSync("C:/Users/lemin/key.pem"),
 //   cert: fs.readFileSync('C:/Users/lemin/cert.pem')
@@ -82,11 +82,21 @@ var options = {
     // mapTest.find().limit(5).then((data)=>{
     //     io.emit("firstConnect", data)
     // })
+    var date_ob = new Date();
+    var hours = date_ob.getHours();
+    var minutes = date_ob.getMinutes();
+    var seconds = date_ob.getSeconds();
+    var dateTime = hours + ":" + minutes + ":" + seconds + "s";
     console.log("connect socketio")
-     
+    var mapp = {
+      latitude : 10.869158,
+      longtitude :  106.803867,
+      Time : dateTime
+    }
+    io.emit("newMapData", JSON.stringify(mapp));
     client.on('disconnect', () => { console.log("client connect: " + client.id) });
   });
-
+  
 // io.on("connection", socket =>{
 //     for(let i=0; i < markers.length; i++){
 //         socket.emit("marker", markers[i])
