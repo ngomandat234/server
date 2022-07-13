@@ -4,7 +4,7 @@ const rfid = require('../models/rfid')
 const router = express.Router()
 const user  = require('../controllers/userController')
 const auth = require("../middleware/authentication")
-//module.exports = function (io) {
+module.exports = function (io) {
 router.get("/",(req,res)=> res.render("../views/home.ejs"))
 router.get("/register",(req,res)=> res.render("../views/register.ejs"))
 router.get("/login",(req,res)=> res.render("../views/login.ejs"))
@@ -31,9 +31,23 @@ router.post("/add", user.addUser)
 router.post('/attendance',user.addStudent)
 router.post('/deleteAttendance', user.delStudent)
 router.post('/updateAttendance', user.updateStudent)
-router.post('/addSensor',user.addSensor)
+router.post('/addSensor',async(req,res,next)=>{
+    try{
+        let newSensor = ({
+            temp : req.body.temp,
+            humidity: req.body.humidity
+        })
+        await io.emit('changeTemHum', newSensor);
+       res.json({message:"Send Sensor Data Successfully"})
+    
+        }
+        catch (err) {
+            res.json({message:"Error"})
+        }
+})
 router.get('/showSensor',user.showSensor)
 router.post('/addRfid',user.addRfid)
-module.exports = router
-//}
+return router;
+//module.exports = router(io)
+}
     

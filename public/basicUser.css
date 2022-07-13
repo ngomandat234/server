@@ -48,4 +48,7 @@ thead{
 .active:after {
     content: "\2796"; /* Unicode character for "minus" sign (-) */
 }
+#TempHum {
+  color: rgb(151, 108, 220);
 
+}

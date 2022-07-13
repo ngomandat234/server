@@ -19,7 +19,7 @@ const URI = 'mongodb+srv://1111:1234@mernprojectceec.byvhv.mongodb.net/MERN_PROJ
 // var server = require("https").Server(options,app)
 var server = require("http").Server(app)
 var io = require("socket.io")(server)
-const user = require('./routers/user')
+const user = require('./routers/user')(io)
 mongoose
 .connect(URI, {useNewUrlParser:true, useUnifiedTopology:true})
 .then(()=>{
@@ -56,7 +56,7 @@ const db = require("./models");
 const Role = db.roleUser;
 
 io.on('connection', function (socket) {
-    console.log('connected');
+    console.log('Socket connected');
 });
 
 const changeStream = student.watch();

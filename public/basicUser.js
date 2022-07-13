@@ -42,6 +42,10 @@ $(document).ready(function () {
           }
           $('#studentTable').append(`</tbody>`)
       });
+      socket.on('changeTemHum', (data)=>{
+        $('#TempHum').empty()
+        $('#TempHum').append(`<div>🌡 Temp: ${data.temp}°C 💧 Hum: ${data.humidity}%</div>`)
+      })
   }
     form.addEventListener('submit', async (e) => {
        e.preventDefault()     
