@@ -30,7 +30,7 @@ mongoose
     })
 }).catch((err) => {
     console.log(err)
-})
+})a
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true, limit:"30mb" }))
 //app.use(cors())
@@ -51,19 +51,24 @@ app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/user',express.static(path.join(__dirname, 'public')));
 app.set('view engine','ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs')
 const db = require("./models");
 const Role = db.roleUser;
 
 io.on('connection', function (socket) {
     console.log('Socket connected');
+    socket.on('id', (data)=>{
+        console.log(data);
+        io.emit('send_id', {id: data.id});
+    })  
+   
+  
 });
 
 const changeStream = student.watch();
 
 changeStream.on('change', (change) => {
     student.find({},function(err, students){
-    console.log(change); // You could parse out the needed info and send only that data. 
+    //console.log(change); // You could parse out the needed info and send only that data. 
     io.emit('changeData', students);
     })
 }); 

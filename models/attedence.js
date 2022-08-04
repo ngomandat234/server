@@ -13,11 +13,13 @@ const studentSchema = new Schema ({
     },
     teacher:{
         type : String
-    },  
+    },
     time: {
         type : String
-        
     },
+    feature: {
+        type : Array
+    }
 }, {timestamps:true})
 const studentModel = mongoose.model('Student', studentSchema)
 module.exports=studentModel

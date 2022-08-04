@@ -24,6 +24,7 @@ router.get("/stream",function (req,res){
 })
 //router.get("/getUser",auth,user.findUserData)
 router.get("/getUser",user.findUserData)
+router.get("/getFeature",user.getFeature)
 router.post("/showID", user.showID)
 router.post("/update", user.updateUser)
 router.post("/delete", user.deleteUser)
@@ -38,8 +39,7 @@ router.post('/addSensor',async(req,res,next)=>{
             humidity: req.body.humidity
         })
         await io.emit('changeTemHum', newSensor);
-       res.json({message:"Send Sensor Data Successfully"})
-    
+        res.json({message:"Send Sensor Data Successfully"})
         }
         catch (err) {
             res.json({message:"Error"})
