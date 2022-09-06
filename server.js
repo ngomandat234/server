@@ -30,7 +30,7 @@ mongoose
     })
 }).catch((err) => {
     console.log(err)
-})a
+})
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true, limit:"30mb" }))
 //app.use(cors())
