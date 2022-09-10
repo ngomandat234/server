@@ -31,7 +31,9 @@ router.post("/delete", user.deleteUser)
 router.post("/add", user.addUser)
 router.post('/attendance',user.addStudent)
 router.post('/deleteAttendance', user.delStudent)
-router.post('/updateAttendance', user.updateStudent)
+router.post('/updateAttendance', user.updateAndCreateStudent)
+router.post('/updateStudent', user.updateStudent)
+router.post('/updateTimeStudent', user.updateTimeStudent)
 router.post('/addSensor',async(req,res,next)=>{
     try{
         let newSensor = ({

@@ -58,10 +58,8 @@ io.on('connection', function (socket) {
     console.log('Socket connected');
     socket.on('id', (data)=>{
         console.log(data);
-        io.emit('send_id', {id: data.id});
+        io.emit('send_id', {id: (data.id).toString()});
     })  
-   
-  
 });
 
 const changeStream = student.watch();

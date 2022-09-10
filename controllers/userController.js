@@ -97,6 +97,22 @@ const addStudent = async(req,res,next) => {
 
 }
 const delStudent = (req,res,next) => {
+    // reqq = JSON.parse(req.body.json)
+    // const studentID = reqq.id
+    // student.countDocuments({id: studentID}, function (err, count){ 
+    //     if(count>1){   
+    //         student.findOneAndRemove({id: studentID})
+    //         .then (()=>{
+    //             res.json({message:"Delete user Successfully"})
+    //         })
+    //         .catch ((err)=> {
+    //             res.status(500).json({error:err})
+    //             res.json({message:"An Error Occured"})
+    //         })
+    //     }else {      
+    //                 res.json({message:"An Error Occured"})
+    //     }
+    // });  
     let studentID = req.body.id
     student.findOneAndRemove({id: studentID})
     .then (()=>{
@@ -106,13 +122,14 @@ const delStudent = (req,res,next) => {
         res.status(500).json({error:err})
         res.json({message:"An Error Occured"})
     })
-
 }
-const updateStudent = async(req,res,next) => {
+const updateAndCreateStudent = async(req,res,next) => {  
     reqq = JSON.parse(req.body.json)
     const studentID = reqq.id
+    // console.log(reqq);
     student.countDocuments({id: studentID}, function (err, count){ 
-        if(count>0){   
+        if(count > 0){   
+            console.log(studentID)
             let updateData = ({
                 //feature: reqq.feature,
                 time: reqq.time
@@ -124,7 +141,6 @@ const updateStudent = async(req,res,next) => {
 
             })
             .catch ((err)=> {
-                //res.status(500).json({error:err})
                 res.json({message:"An Error Occured"})
             })
         }else {
@@ -137,11 +153,46 @@ const updateStudent = async(req,res,next) => {
                 res.json({message:"Create student Successfully"})
                 }
                 catch (err) {
-                    res.json({message:err})
+                    res.json({message:"An Error Occured"})
                 }    
         }
     });  
 }
+const updateTimeStudent = async(req,res,next) => {  
+    reqq = JSON.parse(req.body.json)
+            const studentID = reqq.id
+            let updateData = ({
+                time: reqq.time
+            })
+            student.findOneAndUpdate({id:studentID}, {$set:updateData})
+            .then (()=>{
+                res.json({message:"Update student Successfully"})
+            })
+            .catch ((err)=> {
+                res.json({message:"An Error Occured"})
+            })
+}
+
+const updateStudent = async(req,res,next) => {  
+    const studentID = req.body.id
+            let updateData = ({
+                name: req.body.name,
+                subject: req.body.subject,
+                teacher: req.body.teacher,
+                time: req.body.time
+            })
+            student.findOneAndUpdate({id:studentID}, {$set:updateData})
+            .then (()=>{
+                res.json({message:"Update student Successfully"})
+                console.log("Succers")
+                console.log(updateData)
+            })
+            .catch ((err)=> {
+                res.json({message:"An Error Occured"})
+                console.log("Failed")
+                console.log(updateData)
+            })
+        }
 const addSensor = async(req,res,next) => {
     try{
     const newSensor = new sensor({
@@ -191,5 +242,5 @@ const showRfid = async(req,res,next) => {
                 res.status(500).json({error:err})
             })
         }
-module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent,
-                    delStudent,updateStudent,addSensor,showSensor, addRfid, showRfid, getFeature}
+module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent,updateTimeStudent,
+                    delStudent,updateStudent,updateAndCreateStudent,addSensor,showSensor, addRfid, showRfid, getFeature}

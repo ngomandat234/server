@@ -6,8 +6,14 @@ $(document).ready(function () {
     const subject = document.querySelector('#subject')
     const teacher = document.querySelector('#teacher')
     const time = document.querySelector('#time')
+    const updtname = document.querySelector('#updateName')
+    const updtid = document.querySelector('#updateId')
+    const updtsubject = document.querySelector('#updateSubject')
+    const updtteacher = document.querySelector('#updateTeacher')
+    const updttime = document.querySelector('#updateTime')
     const delForm = document.querySelector('#delForm')
     const delId = document.querySelector('#delId')
+    const updtForm = document.querySelector('#updtForm')
     if(socket !== undefined){
       console.log('Connected to socket...');
       // Handle Output
@@ -71,6 +77,18 @@ $(document).ready(function () {
                 console.log(err.message)
               }
              })
+    updtForm.addEventListener('submit', async (e) => {
+      e.preventDefault()     
+      try {
+        const res = await fetch('/user/updateStudent', {
+        method: 'POST',
+        body: JSON.stringify({ name: updtname.value , id: updtid.value, subject: updtsubject.value, teacher:updtteacher.value, time:updttime.value}),
+        headers: { 'Content-Type': 'application/json' }
+        })   
+         } catch (err) {
+           console.log(err.message)
+         }
+       })
              
     // display.textContent = ''
     const logOut = document.getElementById("buttonID")
