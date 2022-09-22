@@ -2,7 +2,7 @@ const user = require('../models/userModel')
 const student = require('../models/attedence')
 const sensor = require('../models/sensor')
 const rfid = require('../models/rfid')
-const { parse } = require('path')
+const Jimp = require("jimp");
 const findUserData = (req,res,next)=>{
     user.find()
     .then ((respond)=>{
@@ -126,7 +126,8 @@ const delStudent = (req,res,next) => {
 const updateAndCreateStudent = async(req,res,next) => {  
     reqq = JSON.parse(req.body.json)
     const studentID = reqq.id
-    // console.log(reqq);
+    //console.log(reqq);
+    if(studentID != ""){
     student.countDocuments({id: studentID}, function (err, count){ 
         if(count > 0){   
             console.log(studentID)
@@ -157,6 +158,9 @@ const updateAndCreateStudent = async(req,res,next) => {
                 }    
         }
     });  
+} else {
+    res.json({message:"ID is null!!!"})
+}
 }
 const updateTimeStudent = async(req,res,next) => {  
     reqq = JSON.parse(req.body.json)

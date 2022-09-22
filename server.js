@@ -1,4 +1,5 @@
 const express = require('express')
+
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
@@ -31,8 +32,8 @@ mongoose
 }).catch((err) => {
     console.log(err)
 })
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended:true, limit:"30mb" }))
+app.use(bodyParser.json({limit: '50mb'}))
+app.use(bodyParser.urlencoded({extended:true, limit:"50mb", parameterLimit: 1000000}))
 //app.use(cors())
 app.use(cors({
   origin: '*',

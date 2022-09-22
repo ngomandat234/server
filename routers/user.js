@@ -4,6 +4,7 @@ const rfid = require('../models/rfid')
 const router = express.Router()
 const user  = require('../controllers/userController')
 const auth = require("../middleware/authentication")
+const Jimp = require("jimp");
 module.exports = function (io) {
 router.get("/",(req,res)=> res.render("../views/home.ejs"))
 router.get("/register",(req,res)=> res.render("../views/register.ejs"))
@@ -16,6 +17,7 @@ router.get("/basicUser",(req,res)=> {
     })    
 })
 })
+router.get("/ui",(req,res)=> res.render("../views/ui.ejs"))
 router.get("/stream",function (req,res){
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
@@ -25,11 +27,22 @@ router.get("/stream",function (req,res){
 //router.get("/getUser",auth,user.findUserData)
 router.get("/getUser",user.findUserData)
 router.get("/getFeature",user.getFeature)
+
 router.post("/showID", user.showID)
 router.post("/update", user.updateUser)
 router.post("/delete", user.deleteUser)
 router.post("/add", user.addUser)
 router.post('/attendance',user.addStudent)
+router.post('/uploadFile', async(req,res,next) => {
+    console.log(req.body)
+    const buffer = Buffer.from(req.body.img, "base64");  
+    Jimp.read(buffer, (err, res) => {
+            if (err) throw new Error(err);
+        res.quality(10).write("public/resized.png");
+      });
+    res.json({message:"Send ok"})
+    await io.emit('showimg')
+})
 router.post('/deleteAttendance', user.delStudent)
 router.post('/updateAttendance', user.updateAndCreateStudent)
 router.post('/updateStudent', user.updateStudent)
