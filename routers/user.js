@@ -18,7 +18,6 @@ router.get("/basicUser",(req,res)=> {
     })    
 })
 })
-router.get("/ui",(req,res)=> res.render("../views/ui.ejs"))
 router.get("/stream",function (req,res){
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
