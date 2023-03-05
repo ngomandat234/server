@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
     "@hapi/joi": "^17.1.1",
     "accesscontrol": "^2.2.1",
     "bcryptjs": "^2.4.3",
@@ -27,6 +28,7 @@
     "ffmpeg-stream": "^0.7.0",
     "fluent-ffmpeg": "^2.1.2",
     "fs": "^0.0.1-security",
+    "googleapis": "^105.0.0",
     "hbs": "^4.2.0",
     "https": "^1.0.0",
     "id-auto-increment": "^1.0.1",
@@ -43,6 +45,7 @@
     "querystring": "^0.2.1",
     "socket.io": "^4.5.1",
     "socketio": "^1.0.0",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "utf8": "^3.0.0"
   }
 }

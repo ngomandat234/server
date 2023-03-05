@@ -45,10 +45,15 @@ thead{
     margin-left: 5px;
 }
   
-.active:after {
+button.active:after {
     content: "\2796"; /* Unicode character for "minus" sign (-) */
 }
 #TempHum {
   color: rgb(151, 108, 220);
 
+}
+
+li.paginate_button.active {
+  background-color: #ffffff;
+  color: rgb(15, 138, 163);
 }

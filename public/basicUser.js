@@ -18,35 +18,20 @@ $(document).ready(function () {
       console.log('Connected to socket...');
       // Handle Output
       socket.on('changeData', function(data){
-          $('#studentTable').empty()
-                  $('#studentTable').append(`
-                  <thead class="thead">
-                  <tr>
-                    <th scope="col">No.</th>
-                    <th scope="col">ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Subject</th>
-                    <th scope="col">Teacher</th>
-                    <th scope="col">Time</th>
-                  </tr>
-                  </thead>
-                  <tbody>`)
+          $('#studentsList').empty()
           if(data.length){       
-              for(var x = 0;x < data.length;x++){
-                  $('#studentTable').append(`<tr>
-                  <th scope="row">${(x+1)}</th>
-                  <td>${data[x].id}</td>
-                  <td>${data[x].name}</td>
-                  <td>${data[x].subject}</td>
-                  <td>${data[x].teacher}</td>
-                  <td>${data[x].time}</td>
-                   </tr>`);
-              }
-          } else { $('#studentTable').append(`<tr>
-          <td colspan="3">${'There no one at all'}</td>
-         </tr>`)
-          }
-          $('#studentTable').append(`</tbody>`)
+                  for(var x = 0;x < data.length;x++){
+                      $('#studentsList').append(`<tr>
+                      <th scope="row" class="sorting_1">${(x+1)}</th>
+                      <td>${data[x].id}</td>
+                      <td>${data[x].name}</td>
+                      <td>${data[x].subject}</td>
+                      <td>${data[x].teacher}</td>
+                      <td>${data[x].time}</td>
+                       </tr>`);
+                  }} else { $('#cmn').append(`<tr>
+                    <td colspan="12">${'There no one at all'}</td>
+                   </tr>`)}
       });
       socket.on('changeTemHum', (data)=>{
         $('#TempHum').empty()

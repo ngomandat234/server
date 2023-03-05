@@ -3,8 +3,9 @@ const student = require('../models/attedence')
 const rfid = require('../models/rfid')
 const router = express.Router()
 const user  = require('../controllers/userController')
+const sheets  = require('../controllers/sheetsController')
 const auth = require("../middleware/authentication")
-const Jimp = require("jimp");
+const Jimp = require("jimp")
 module.exports = function (io) {
 router.get("/",(req,res)=> res.render("../views/home.ejs"))
 router.get("/register",(req,res)=> res.render("../views/register.ejs"))
@@ -33,15 +34,17 @@ router.post("/update", user.updateUser)
 router.post("/delete", user.deleteUser)
 router.post("/add", user.addUser)
 router.post('/attendance',user.addStudent)
+router.post('/creatingSheet',sheets.updateSheet)
 router.post('/uploadFile', async(req,res,next) => {
-    console.log(req.body)
-    const buffer = Buffer.from(req.body.img, "base64");  
-    Jimp.read(buffer, (err, res) => {
-            if (err) throw new Error(err);
-        res.quality(10).write("public/resized.png");
-      });
-    res.json({message:"Send ok"})
-    await io.emit('showimg')
+    // console.log(req.body)
+    // var data = utf8.decode(req.body.img)
+    // const buffer = Buffer.from(data, "base64");  
+    res.json({message:"ok"})
+    // Jimp.read(buffer, (err, res) => {
+    //         if (err) throw new Error(err);
+    //     res.quality(5).write("public/resized.png");
+    //   });
+    io.emit('showimg', req.body.img)
 })
 router.post('/deleteAttendance', user.delStudent)
 router.post('/updateAttendance', user.updateAndCreateStudent)

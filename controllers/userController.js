@@ -2,7 +2,21 @@ const user = require('../models/userModel')
 const student = require('../models/attedence')
 const sensor = require('../models/sensor')
 const rfid = require('../models/rfid')
-const Jimp = require("jimp");
+const {google} = require('googleapis');
+
+const auth = new google.auth.GoogleAuth({
+    keyFile: "keys.json", //the key file
+    //url to spreadsheets API
+    scopes: "https://www.googleapis.com/auth/spreadsheets", 
+});
+const authClientObject = auth.getClient();
+
+//Google sheets instance
+const googleSheetsInstance = google.sheets({ version: "v4", auth: authClientObject });
+
+// spreadsheet id
+const spreadsheetId = "1FFVdpNqWv8Rd3CR1rGW4NN-DLeqwjeKzBgEIeHZqk-Y";
+
 const findUserData = (req,res,next)=>{
     user.find()
     .then ((respond)=>{
@@ -47,6 +61,25 @@ const addUser = async(req,res,next) => {
         res.json({message:"An Error Occured"})
     }
 
+}
+const creatingSheet = async() => {
+    // Get metadata about spreadsheet
+    const sheetClear = await googleSheetsInstance.spreadsheets.values.clear({
+        auth,
+        spreadsheetId,
+        range: "A1:F100",
+    });
+    let title = ['NO.', 'ID', 'NAME', 'SUBJECT', 'TEACHER', 'TIME'];
+    const sheetInfo = await googleSheetsInstance.spreadsheets.values.append({
+        auth,
+        spreadsheetId,
+        range: "A:F",
+        valueInputOption: "USER_ENTERED", 
+        resource: {
+            values: [title]
+        },
+    });
+    // console.log(sheetInfo.data.values.length);
 }
 const updateUser = (req,res,next) => {
     const userID = req.body.userID
@@ -204,7 +237,7 @@ const addSensor = async(req,res,next) => {
         humidity: req.body.humidity
     })
     await newSensor.save()
-   res.json({message:"Add Sensor Successfully"})
+    res.json({message:"Add Sensor Successfully"})
 
     }
     catch (err) {
@@ -247,4 +280,5 @@ const showRfid = async(req,res,next) => {
             })
         }
 module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent,updateTimeStudent,
-                    delStudent,updateStudent,updateAndCreateStudent,addSensor,showSensor, addRfid, showRfid, getFeature}
+                    delStudent,updateStudent,updateAndCreateStudent,addSensor,showSensor, addRfid, showRfid, getFeature,
+                    creatingSheet}
