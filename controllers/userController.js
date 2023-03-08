@@ -157,13 +157,14 @@ const delStudent = (req,res,next) => {
     })
 }
 const updateAndCreateStudent = async(req,res,next) => {  
+    console.log(req.body);
     reqq = JSON.parse(req.body.json)
     const studentID = reqq.id
-    //console.log(reqq);
+    console.log(reqq);
     if(studentID != ""){
     student.countDocuments({id: studentID}, function (err, count){ 
         if(count > 0){   
-            console.log(studentID)
+            // console.log(studentID)
             let updateData = ({
                 //feature: reqq.feature,
                 time: reqq.time

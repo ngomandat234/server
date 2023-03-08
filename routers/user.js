@@ -33,7 +33,7 @@ router.post("/update", user.updateUser)
 router.post("/delete", user.deleteUser)
 router.post("/add", user.addUser)
 router.post('/attendance',user.addStudent)
-router.post('/creatingSheet',sheets.updateSheet)
+// router.post('/creatingSheet',sheets.updateSheet)
 router.post('/uploadFile', async(req,res,next) => {
     // console.log(req.body)
     // var data = utf8.decode(req.body.img)
