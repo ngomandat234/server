@@ -3,19 +3,19 @@ const student = require('../models/attedence')
 const sensor = require('../models/sensor')
 const rfid = require('../models/rfid')
 const {google} = require('googleapis');
+const sheets = require('./sheetsController')
+// const auth = new google.auth.GoogleAuth({
+//     keyFile: "keys.json", //the key file
+//     //url to spreadsheets API
+//     scopes: "https://www.googleapis.com/auth/spreadsheets", 
+// });
+// const authClientObject = auth.getClient();
 
-const auth = new google.auth.GoogleAuth({
-    keyFile: "keys.json", //the key file
-    //url to spreadsheets API
-    scopes: "https://www.googleapis.com/auth/spreadsheets", 
-});
-const authClientObject = auth.getClient();
+// //Google sheets instance
+// const googleSheetsInstance = google.sheets({ version: "v4", auth: authClientObject });
 
-//Google sheets instance
-const googleSheetsInstance = google.sheets({ version: "v4", auth: authClientObject });
-
-// spreadsheet id
-const spreadsheetId = "1FFVdpNqWv8Rd3CR1rGW4NN-DLeqwjeKzBgEIeHZqk-Y";
+// // spreadsheet id
+// const spreadsheetId = "1FFVdpNqWv8Rd3CR1rGW4NN-DLeqwjeKzBgEIeHZqk-Y";
 
 const findUserData = (req,res,next)=>{
     user.find()
@@ -63,23 +63,23 @@ const addUser = async(req,res,next) => {
 
 }
 const creatingSheet = async() => {
-    // Get metadata about spreadsheet
-    const sheetClear = await googleSheetsInstance.spreadsheets.values.clear({
-        auth,
-        spreadsheetId,
-        range: "A1:F100",
-    });
-    let title = ['NO.', 'ID', 'NAME', 'SUBJECT', 'TEACHER', 'TIME'];
-    const sheetInfo = await googleSheetsInstance.spreadsheets.values.append({
-        auth,
-        spreadsheetId,
-        range: "A:F",
-        valueInputOption: "USER_ENTERED", 
-        resource: {
-            values: [title]
-        },
-    });
-    // console.log(sheetInfo.data.values.length);
+    // // Get metadata about spreadsheet
+    // const sheetClear = await googleSheetsInstance.spreadsheets.values.clear({
+    //     auth,
+    //     spreadsheetId,
+    //     range: "A1:F100",
+    // });
+    // let title = ['NO.', 'ID', 'NAME', 'SUBJECT', 'TEACHER', 'TIME'];
+    // const sheetInfo = await googleSheetsInstance.spreadsheets.values.append({
+    //     auth,
+    //     spreadsheetId,
+    //     range: "A:F",
+    //     valueInputOption: "USER_ENTERED", 
+    //     resource: {
+    //         values: [title]
+    //     },
+    // });
+    // // console.log(sheetInfo.data.values.length);
 }
 const updateUser = (req,res,next) => {
     const userID = req.body.userID
@@ -122,14 +122,21 @@ const addStudent = async(req,res,next) => {
         time: req.body.time
     })
     await newStudent.save()
-   res.json({message:"Check student Successfully"})
+    try{
+        const list_students = await student.find().select('id name subject teacher time -_id');
+        // console.log(list_students)
+        sheets.updateSheet(list_students);
+        }
+    catch (err) {
+        res.json({message:err})
+    }
+    res.json({message:"Check student Successfully"})
     }
     catch (err) {
         res.json({message:err})
     }
-
 }
-const delStudent = (req,res,next) => {
+const delStudent = async(req,res,next) => {
     // reqq = JSON.parse(req.body.json)
     // const studentID = reqq.id
     // student.countDocuments({id: studentID}, function (err, count){ 
@@ -147,14 +154,24 @@ const delStudent = (req,res,next) => {
     //     }
     // });  
     let studentID = req.body.id
-    student.findOneAndRemove({id: studentID})
-    .then (()=>{
+    await student.findOneAndRemove({id: studentID})
+    .then (async()=>{
+        try{
+            const list_students = await student.find().select('id name subject teacher time -_id');
+            // console.log(list_students)
+            sheets.updateSheet(list_students);
+            // res.json({message:"Update sheet successfully"})
+            }
+        catch (err) {
+            res.json({message:err})
+        }
         res.json({message:"Delete user Successfully"})
     })
     .catch ((err)=> {
         res.status(500).json({error:err})
         res.json({message:"An Error Occured"})
     })
+    
 }
 const updateAndCreateStudent = async(req,res,next) => {  
     console.log(req.body);
@@ -203,7 +220,15 @@ const updateTimeStudent = async(req,res,next) => {
                 time: reqq.time
             })
             student.findOneAndUpdate({id:studentID}, {$set:updateData})
-            .then (()=>{
+            .then (async()=>{
+                try{
+                    const list_students = await student.find().select('id name subject teacher time -_id');
+                    // console.log(list_students)
+                    sheets.updateSheet(list_students);
+                    }
+                catch (err) {
+                    res.json({message:err})
+                }
                 res.json({message:"Update student Successfully"})
             })
             .catch ((err)=> {
@@ -220,7 +245,15 @@ const updateStudent = async(req,res,next) => {
                 time: req.body.time
             })
             student.findOneAndUpdate({id:studentID}, {$set:updateData})
-            .then (()=>{
+            .then (async()=>{
+                try{
+                    const list_students = await student.find().select('id name subject teacher time -_id');
+                    // console.log(list_students)
+                    sheets.updateSheet(list_students);
+                    }
+                catch (err) {
+                    res.json({message:err})
+                }
                 res.json({message:"Update student Successfully"})
                 console.log("Succers")
                 console.log(updateData)

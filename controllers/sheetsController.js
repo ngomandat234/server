@@ -24,10 +24,10 @@ const updateSheet = async(data) => {
     // console.log(data.length)
     if(data.length){       
         for(var x = 0;x < data.length;x++){
-            await googleSheetsInstance.spreadsheets.values.append({
+            await googleSheetsInstance.spreadsheets.values.update({
                 auth,
                 spreadsheetId,
-                range: "A:F",
+                range: "A"+ (x+6) +":F"+(x+6),
                 valueInputOption: "USER_ENTERED", 
                 resource: {
                     values: [[x+1,data[x].id,data[x].name,data[x].subject,data[x].teacher, data[x].time]]
