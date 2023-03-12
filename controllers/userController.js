@@ -123,14 +123,14 @@ const addStudent = async(req,res,next) => {
     })
     await newStudent.save()
     try{
-        const list_students = await student.find().select('id name subject teacher time -_id');
-        // console.log(list_students)
-        sheets.updateSheet(list_students);
+        const list_students = await student.find().select('id -_id');
+        sheets.addSheet(list_students.length - 1, newStudent);
         }
     catch (err) {
         res.json({message:err})
     }
     res.json({message:"Check student Successfully"})
+    console.log("Add student Successfully [] Name : " + newStudent.name)
     }
     catch (err) {
         res.json({message:err})
@@ -158,14 +158,13 @@ const delStudent = async(req,res,next) => {
     .then (async()=>{
         try{
             const list_students = await student.find().select('id name subject teacher time -_id');
-            // console.log(list_students)
-            sheets.updateSheet(list_students);
-            // res.json({message:"Update sheet successfully"})
+            sheets.reloadSheet(list_students);
             }
         catch (err) {
             res.json({message:err})
         }
         res.json({message:"Delete user Successfully"})
+        console.log("Delete student Successfully [] ID : " + studentID)
     })
     .catch ((err)=> {
         res.status(500).json({error:err})
@@ -180,22 +179,23 @@ const updateAndCreateStudent = async(req,res,next) => {
     console.log(reqq);
     if(studentID != ""){
     student.countDocuments({id: studentID}, function (err, count){ 
-        if(count > 0){   
-            // console.log(studentID)
+        if(count > 0)
+        {   
             let updateData = ({
                 //feature: reqq.feature,
                 time: reqq.time
             })
             student.findOneAndUpdate({id:studentID}, {$set:updateData})
             student.updateOne({id:studentID}, {$push: {feature: reqq.feature}})
-            .then (()=>{
-                res.json({message:"Update student Successfully"})
-
-            })
-            .catch ((err)=> {
-                res.json({message:"An Error Occured"})
-            })
-        }else {
+                .then (()=>{
+                    res.json({message:"Update student Successfully"})
+                })
+                .catch ((err)=> {
+                    res.json({message:"An Error Occured"})
+                })
+        } 
+        else 
+        {
             try{
                 const newStudent = new student({
                     id: reqq.id,
@@ -222,14 +222,18 @@ const updateTimeStudent = async(req,res,next) => {
             student.findOneAndUpdate({id:studentID}, {$set:updateData})
             .then (async()=>{
                 try{
-                    const list_students = await student.find().select('id name subject teacher time -_id');
-                    // console.log(list_students)
-                    sheets.updateSheet(list_students);
+                    const list_students = await student.find().select('id -_id');
+                    list_students.forEach((element, index) => {
+                        if (element.id == studentID){
+                            sheets.updateTimeSheet(index, updateData);
+                        }
+                });
                     }
                 catch (err) {
                     res.json({message:err})
                 }
                 res.json({message:"Update student Successfully"})
+                console.log("Update time Successfully [] ID : " + studentID)
             })
             .catch ((err)=> {
                 res.json({message:"An Error Occured"})
@@ -239,29 +243,36 @@ const updateTimeStudent = async(req,res,next) => {
 const updateStudent = async(req,res,next) => {  
     const studentID = req.body.id
             let updateData = ({
+                id: req.body.id,
                 name: req.body.name,
                 subject: req.body.subject,
                 teacher: req.body.teacher,
                 time: req.body.time
             })
-            student.findOneAndUpdate({id:studentID}, {$set:updateData})
-            .then (async()=>{
-                try{
-                    const list_students = await student.find().select('id name subject teacher time -_id');
-                    // console.log(list_students)
-                    sheets.updateSheet(list_students);
+            try
+            {
+                const list_students = await student.find().select('id -_id');
+                list_students.forEach((element, index) => {
+                    if (element.id == studentID){
+                        sheets.updateSheet(index, updateData);
                     }
-                catch (err) {
-                    res.json({message:err})
-                }
+                });
+            //     // console.log(list_students)
+            }
+            catch (err) {
+                res.json({message:err})
+            }
+            student.findOneAndUpdate({id:studentID}, {$set:updateData})
+            .then (()=>{
                 res.json({message:"Update student Successfully"})
-                console.log("Succers")
-                console.log(updateData)
+                console.log("Update student successfully [] ID : " + studentID)
+                // console.log("Succers")
+                // console.log(updateData)
             })
             .catch ((err)=> {
                 res.json({message:"An Error Occured"})
-                console.log("Failed")
-                console.log(updateData)
+                // console.log("Failed")
+                // console.log(updateData)
             })
         }
 const addSensor = async(req,res,next) => {

@@ -1,4 +1,4 @@
-var socket = io.connect('http://172.17.12.56:3001', { transports : ['websocket'] });
+var socket = io.connect('http://localhost:3001', { transports : ['websocket'] });
 $(document).ready(function () {
     const form = document.querySelector('form')
     const name = document.querySelector('#name')
