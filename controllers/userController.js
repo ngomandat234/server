@@ -27,7 +27,7 @@ const findUserData = (req,res,next)=>{
     })
 }
 const getFeature = (req,res,next)=>{
-    student.find().select('id feature -_id')
+    student.find().select('id feature name -_id')
     .then ((respond)=>{
         res.status(200).json(respond)
     })
@@ -130,7 +130,7 @@ const addStudent = async(req,res,next) => {
         res.json({message:err})
     }
     res.json({message:"Check student Successfully"})
-    console.log("Add student Successfully [] Name : " + newStudent.name)
+    console.log("Add student Successfully - Name : " + newStudent.name)
     }
     catch (err) {
         res.json({message:err})
@@ -164,7 +164,7 @@ const delStudent = async(req,res,next) => {
             res.json({message:err})
         }
         res.json({message:"Delete user Successfully"})
-        console.log("Delete student Successfully [] ID : " + studentID)
+        console.log("Delete student Successfully - ID : " + studentID)
     })
     .catch ((err)=> {
         res.status(500).json({error:err})
@@ -202,6 +202,13 @@ const updateAndCreateStudent = async(req,res,next) => {
                     time: reqq.time,
                 })
                 newStudent.save()
+                try{
+                    const list_students = student.find().select('id -_id');
+                    sheets.addSheet(list_students.length - 1, newStudent);
+                    }
+                catch (err) {
+                    res.json({message:err})
+                }
                 res.json({message:"Create student Successfully"})
                 }
                 catch (err) {
@@ -233,7 +240,7 @@ const updateTimeStudent = async(req,res,next) => {
                     res.json({message:err})
                 }
                 res.json({message:"Update student Successfully"})
-                console.log("Update time Successfully [] ID : " + studentID)
+                console.log("Update time Successfully - ID : " + studentID)
             })
             .catch ((err)=> {
                 res.json({message:"An Error Occured"})
