@@ -10,6 +10,7 @@
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="basicUser.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700,800" rel="stylesheet">
+    <script src="https://unpkg.com/jimp@0.14.0/browser/lib/jimp.js"></script>
     <!-- Ansta CSS -->
     <link href="assets/css/dashboard.css" rel="stylesheet" type="text/css">
 
@@ -69,13 +70,14 @@
                   <table id="example" class="table table-striped table-bordered w-100 text-nowrap dataTable no-footer" role="grid" aria-describedby="example_info">
             <thead>
               <tr role="row">
-                <th class="wd-15p sorting_asc" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Sequense: activate to sort column descending" style="width: 30.825px;" aria-sort="ascending">NO.</th>
+                <th class="wd-15p sorting_asc" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Sequense: activate to sort column descending" style="width: 5.825px;" aria-sort="ascending">NO.</th>
                 <th class="wd-15p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="ID: activate to sort column ascending" style="width: 82.7625px;">ID</th>
-                <th class="wd-20p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="NAME: activate to sort column ascending" style="width: 130.163px;">NAME</th>
+                <th class="wd-20p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="NAME: activate to sort column ascending" style="width: 100.163px;">NAME</th>
                 <th class="wd-15p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="SUBJECT: activate to sort column ascending" style="width: 88.075px;">SUBJECT</th>
-                <th class="wd-10p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="TEACHER: activate to sort column ascending" style="width: 130.3375px;">TEACHER</th>
-                <th class="wd-25p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="TIME: activate to sort column ascending" style="width: 159.913px;">TIME</th>
-              </tr>
+                <th class="wd-10p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="TEACHER: activate to sort column ascending" style="width: 100.3375px;">TEACHER</th>
+                <th class="wd-25p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="TIME: activate to sort column ascending" style="width: 80.913px;">TIME</th>
+                <th class="wd-10p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="IMAGE" style="width: 120.3375px;">IMAGE</th>
+              </tr> 
             </thead>
             <tbody id="studentsList">
             <% if(studentList.length){
@@ -86,7 +88,8 @@
                 <td ><%=studentList[i].name%></td>
                 <td ><%=studentList[i].subject%></td>
                 <td ><%=studentList[i].teacher%></td>
-                <td ><%=studentList[i].time%></td>
+                <td ><%=studentList[i].time[0]%></td>
+                <td ><div id="img<%=i%>" width="120px" height="auto"></div></td>
               </tr>
               <% }
                         
@@ -164,30 +167,5 @@
               </div>
           </div>
         </div>
-           <!-- <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">No.</th>
-                <th scope="col">ID</th>
-                <th scope="col">Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% if(rfidList.length){
-                for(var i = 0; i< rfidList.length; i++) {%>  
-                <tr>
-                  <th scope="row"><%= (i+1) %></th>
-                  <th><%=rfidList[i].id%></th>
-                  <td><%=rfidList[i].time%></td>
-                </tr>
-                <% }
-                         
-                 }else{ %>
-                     <tr>
-                        <td colspan="3">No student</td>
-                     </tr>
-                  <% } %>      
-            </tbody> -->
-          <!-- </table>
   </body>
 </html>

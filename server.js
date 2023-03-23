@@ -31,7 +31,7 @@ mongoose
     console.log(err)
 })
 app.use(bodyParser.json({limit: '50mb'}))
-app.use(bodyParser.urlencoded({extended:true, limit:"50mb", parameterLimit: 1000000}))
+app.use(bodyParser.urlencoded({extended:true, limit:"50mb", parameterLimit: 10000000}))
 //app.use(cors())
 app.use(cors({
   origin: '*',
@@ -56,18 +56,30 @@ const Role = db.roleUser;
 io.on('connection', function (socket) {
     console.log('Socket connected');
     socket.on('id', (data)=>{
-        console.log(data);
+        // console.log(data);
         io.emit('send_id', {id: (data.id).toString()});
     })  
+    socket.on('sendSignal', (data)=>{
+        // console.log(data[15].image);
+        io.emit('updateImage', data);
+    })  
+    socket.on('requestImg',(data)=>{
+        const nameImg = data + ".png";
+        var imageData = {
+            image: 'images/' + nameImg,
+            time: data
+        }
+        // console.log(imageData.image)
+        io.emit('image-data', imageData)
+    })
 });
 
 const changeStream = student.watch();
 
-changeStream.on('change', (change) => {
-    student.find({},function(err, students){
-    //console.log(change); // You could parse out the needed info and send only that data. 
-    io.emit('changeData', students);
-    })
+changeStream.on('change', async(change) => {
+    const list_students = await student.find().select('id name subject teacher time image -_id');
+    // console.log(change); // You could parse out the needed info and send only that data. 
+    io.emit('changeData', list_students);
 }); 
 // function InitRole() {
 //     Role.estimatedDocumentCount((err, count) => {

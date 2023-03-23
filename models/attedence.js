@@ -15,10 +15,13 @@ const studentSchema = new Schema ({
         type : String
     },
     time: {
-        type : String
+        type : Array
     },
     feature: {
         type : Array
+    },
+    image: {
+        type : String
     }
 }, {timestamps:true})
 const studentModel = mongoose.model('Student', studentSchema)

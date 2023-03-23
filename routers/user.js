@@ -11,12 +11,9 @@ router.get("/",(req,res)=> res.render("../views/home.ejs"))
 router.get("/register",(req,res)=> res.render("../views/register.ejs"))
 router.get("/login",(req,res)=> res.render("../views/login.ejs"))
 router.get("/admin",(req,res)=> res.render("../views/admin.ejs"))
-router.get("/basicUser",(req,res)=> {
-    student.find({},function(err, students){
-    rfid.find({}, function(err, rfids){
-        res.render("../views/basicUser.ejs",{studentList: students, rfidList: rfids})
-    })    
-})
+router.get("/basicUser",async (req,res)=> {
+    const list_students = await student.find().select('id name subject teacher time -_id');
+        res.render("../views/basicUser.ejs",{studentList: list_students})
 })
 router.get("/stream",function (req,res){
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -25,6 +22,8 @@ router.get("/stream",function (req,res){
     res.render("../views/stream.ejs")
 })
 //router.get("/getUser",auth,user.findUserData)
+router.get("/ui",(req,res)=> res.render("../views/ui.ejs"))
+
 router.get("/getUser",user.findUserData)
 router.get("/getFeature",user.getFeature)
 
@@ -33,22 +32,17 @@ router.post("/update", user.updateUser)
 router.post("/delete", user.deleteUser)
 router.post("/add", user.addUser)
 router.post('/attendance',user.addStudent)
+// router.post('/uploadFile', user.updateImage)
 // router.post('/creatingSheet',sheets.updateSheet)
-router.post('/uploadFile', async(req,res,next) => {
-    // console.log(req.body)
-    // var data = utf8.decode(req.body.img)
-    // const buffer = Buffer.from(data, "base64");  
-    res.json({message:"ok"})
-    // Jimp.read(buffer, (err, res) => {
-    //         if (err) throw new Error(err);
-    //     res.quality(5).write("public/resized.png");
-    //   });
-    io.emit('showimg', req.body.img)
-})
+// router.post('/uploadFile', async(req,res,next) => {
+//     res.json({message:"ok"})
+//     console.log("receive image")
+//     io.emit('showimg', req.body.img)
+// })
 router.post('/deleteAttendance', user.delStudent)
 router.post('/updateAttendance', user.updateAndCreateStudent)
 router.post('/updateStudent', user.updateStudent)
-router.post('/updateTimeStudent', user.updateTimeStudent)
+// router.post('/updateTimeStudent', user.updateTimeStudent)
 router.post('/addSensor',async(req,res,next)=>{
     try{
         let newSensor = ({
@@ -61,6 +55,43 @@ router.post('/addSensor',async(req,res,next)=>{
         catch (err) {
             res.json({message:"Error"})
         }
+})
+router.post('/updateTimeStudent', async(req,res,next) => {
+    reqq = JSON.parse(req.body.json)
+    const studentID = reqq.id
+    let updateData = ({
+        time: reqq.time
+    })
+    student.updateOne({id:studentID}, {$push: updateData})
+    .then (async()=>
+    {
+        try
+        {
+            const buffer = Buffer.from(reqq.img, "base64");  
+            const nameImg = reqq.time + ".png";
+            Jimp.read(buffer, (err, res) => {
+                    if (err) throw new Error(err);
+                    res.quality(10).write("public/images/"+ nameImg);
+                    });
+            const list_students = await student.find().select('id -_id');
+            list_students.forEach((element, index) => 
+            {
+                if (element.id == studentID){
+                    sheets.updateTimeSheet(index, reqq.time);
+                }
+            });
+        }
+        catch (err) {
+            res.json({message:err})
+        }
+        res.json({message:"Update student Successfully"})
+    //     console.log("Update time Successfully - ID : " + studentID)
+    })
+    .catch ((err)=> 
+    {
+        res.json({message:err})
+    })
+   
 })
 router.get('/showSensor',user.showSensor)
 router.post('/addRfid',user.addRfid)

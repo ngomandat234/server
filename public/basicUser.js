@@ -1,4 +1,4 @@
-var socket = io.connect('http://192.168.0.2:3001', { transports : ['websocket'] });
+var socket = io.connect('http://localhost:3001', { transports : ['websocket'] });
 $(document).ready(function () {
     const form = document.querySelector('form')
     const name = document.querySelector('#name')
@@ -14,25 +14,76 @@ $(document).ready(function () {
     const delForm = document.querySelector('#delForm')
     const delId = document.querySelector('#delId')
     const updtForm = document.querySelector('#updtForm')
+    const table = document.getElementById('example');
+   
     if(socket !== undefined){
       console.log('Connected to socket...');
       // Handle Output
-      socket.on('changeData', function(data){
-          $('#studentsList').empty()
-          if(data.length){       
-                  for(var x = 0;x < data.length;x++){
-                      $('#studentsList').append(`<tr>
-                      <th scope="row" class="sorting_1">${(x+1)}</th>
-                      <td>${data[x].id}</td>
-                      <td>${data[x].name}</td>
-                      <td>${data[x].subject}</td>
-                      <td>${data[x].teacher}</td>
-                      <td>${data[x].time}</td>
-                       </tr>`);
-                  }} else { $('#cmn').append(`<tr>
+      var elem;
+      var buffer;
+      var idd;
+      var ImgCell; 
+      socket.on('changeData', async function (data){
+        const tbody = table.getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        // $('#studentsList').empty()
+        if(data.length){       
+                for(var x = 0;x < data.length;x++){
+                    await $('#studentsList').append(`<tr>
+                    <th scope="row" class="sorting_1">${(x+1)}</th>
+                    <td>${data[x].id}</td>
+                    <td>${data[x].name}</td>
+                    <td>${data[x].subject}</td>
+                    <td>${data[x].teacher}</td>
+                    <td>${data[x].time[0]}</td>
+                    <td class = "t${data[x].time[0]}"></td>
+                    </tr>`);
+                    for (var i = 1; i < data[x].time.length; i++){
+                    await $('#studentsList').append(`<tr>
+                    <th scope="row" class="sorting_1"></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>${data[x].time[i]}</td>
+                    <td class = "t${data[x].time[i]}"></td>
+                    </tr>`);
+                    }
+                    if(data[x].time.length && data[x].time[0] !='' )
+                    {
+                      for (var i = 0; i < data[x].time.length; i++){
+                      await socket.emit('requestImg', data[x].time[i]);
+                      // ImgCell = await document.querySelector(`.t${data[x].time[i]}`);
+                      // ImgCell.innerHTML = `<img src="images/${data[x].time[i]}">`;
+                    }
+                }
+              } 
+                } else { $('#cmn').append(`<tr>
                     <td colspan="12">${'There no one at all'}</td>
-                   </tr>`)}
+                    </tr>`)}
       });
+      socket.on('image-data', imageData => {
+        if (imageData.image) {
+          ImgCell = document.querySelector(`.t${imageData.time}`);
+          ImgCell.innerHTML = `<img src="${imageData.image}">`;
+        }
+      });
+      socket.on('updateImage', (data)=>{
+        for(var y = 0;y < data.length;y++){
+        if (data[y].image) {
+          // console.log(data[y].image);
+          idd = "img"+y
+          console.log(idd)
+          elem = document.createElement("img");
+          buffer = Buffer.from(data[y].image, "base64");  
+          Jimp.read(buffer,  (err, res) => {
+              res.getBase64Async(jimp.MIME_PNG).then((newImage) => {
+              elem.src = newImage;  
+              document.getElementById(idd.toString()).appendChild(elem);
+            })
+          })
+        }
+      }})
       socket.on('changeTemHum', (data)=>{
         $('#TempHum').empty()
         $('#TempHum').append(`<div>🌡 Temp: ${data.temp}°C 💧 Hum: ${data.humidity}%</div>`)

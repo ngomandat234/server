@@ -181,11 +181,11 @@ const updateAndCreateStudent = async(req,res,next) => {
     student.countDocuments({id: studentID}, function (err, count){ 
         if(count > 0)
         {   
-            let updateData = ({
-                //feature: reqq.feature,
-                time: reqq.time
-            })
-            student.findOneAndUpdate({id:studentID}, {$set:updateData})
+            // let updateData = ({
+            //     //feature: reqq.feature,
+            //     time: reqq.time
+            // })
+            // student.findOneAndUpdate({id:studentID}, {$set:updateData})
             student.updateOne({id:studentID}, {$push: {feature: reqq.feature}})
                 .then (()=>{
                     res.json({message:"Update student Successfully"})
@@ -220,10 +220,15 @@ const updateAndCreateStudent = async(req,res,next) => {
     res.json({message:"ID is null!!!"})
 }
 }
-const updateTimeStudent = async(req,res,next) => {  
+const updateTimeStudent = async(req,res,next) => {
+    // console.log(req);
     reqq = JSON.parse(req.body.json)
             const studentID = reqq.id
+            let updateSheetData = ({
+                time: reqq.time
+            })
             let updateData = ({
+                image: reqq.img,
                 time: reqq.time
             })
             student.findOneAndUpdate({id:studentID}, {$set:updateData})
@@ -232,7 +237,7 @@ const updateTimeStudent = async(req,res,next) => {
                     const list_students = await student.find().select('id -_id');
                     list_students.forEach((element, index) => {
                         if (element.id == studentID){
-                            sheets.updateTimeSheet(index, updateData);
+                            sheets.updateTimeSheet(index, updateSheetData);
                         }
                 });
                     }
@@ -246,7 +251,33 @@ const updateTimeStudent = async(req,res,next) => {
                 res.json({message:"An Error Occured"})
             })
 }
-
+// const updateImage = async (req,res,next) =>{
+//     reqq = JSON.parse(req.body.json)
+//     const studentID = reqq.id
+//     let updateData = ({
+//         time: reqq.time,
+//         image: reqq.img
+//     })
+//     student.findOneAndUpdate({id:studentID}, {$set:updateData})
+//     .then (async()=>{
+//         try{
+//             const list_students = await student.find().select('id -_id');
+//             list_students.forEach((element, index) => {
+//                 if (element.id == studentID){
+//                     sheets.updateTimeSheet(index, updateData);
+//                 }
+//         });
+//             }
+//         catch (err) {
+//             res.json({message:err})
+//         }
+//         res.json({message:"Update student Successfully"})
+//         console.log("Update time Successfully - ID : " + studentID)
+//     })
+//     .catch ((err)=> {
+//         res.json({message:"An Error Occured"})
+//     })
+// }
 const updateStudent = async(req,res,next) => {  
     const studentID = req.body.id
             let updateData = ({
