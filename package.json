@@ -35,6 +35,7 @@
     "jimp": "^0.16.2",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
+    "mongodb": "^5.5.0",
     "mongoose": "^6.3.4",
     "mongoose-schema-jsonschema": "^2.0.2",
     "morgan": "^1.10.0",

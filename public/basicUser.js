@@ -23,22 +23,27 @@ $(document).ready(function () {
       var buffer;
       var idd;
       var ImgCell; 
+      var replacedTime;
+      socket.emit('requestChangeData')
       socket.on('changeData', async function (data){
         const tbody = table.getElementsByTagName('tbody')[0];
         tbody.innerHTML = '';
         // $('#studentsList').empty()
         if(data.length){       
                 for(var x = 0;x < data.length;x++){
+                  if(data[x].time.length > 0)
+                    replacedTime = data[x].time[0].replace(/\s/g, "_");
                     await $('#studentsList').append(`<tr>
                     <th scope="row" class="sorting_1">${(x+1)}</th>
                     <td>${data[x].id}</td>
                     <td>${data[x].name}</td>
                     <td>${data[x].subject}</td>
                     <td>${data[x].teacher}</td>
-                    <td>${data[x].time[0]}</td>
-                    <td class = "t${data[x].time[0]}"></td>
+                    <td>${data[x].time.length > 0 ? data[x].time[0] : ""}</td>
+                    <td class = "t${replacedTime}"></td>
                     </tr>`);
                     for (var i = 1; i < data[x].time.length; i++){
+                    replacedTime = data[x].time[i].replace(/\s/g, "_");
                     await $('#studentsList').append(`<tr>
                     <th scope="row" class="sorting_1"></th>
                     <td></td>
@@ -46,15 +51,19 @@ $(document).ready(function () {
                     <td></td>
                     <td></td>
                     <td>${data[x].time[i]}</td>
-                    <td class = "t${data[x].time[i]}"></td>
+                    <td class = "t${replacedTime}"></td>
                     </tr>`);
                     }
                     if(data[x].time.length && data[x].time[0] !='' )
                     {
                       for (var i = 0; i < data[x].time.length; i++){
-                      await socket.emit('requestImg', data[x].time[i]);
+                      replacedTime = data[x].time[i].replace(/\s/g, "_");
+                      await socket.emit('requestImg', replacedTime);
                       // ImgCell = await document.querySelector(`.t${data[x].time[i]}`);
                       // ImgCell.innerHTML = `<img src="images/${data[x].time[i]}">`;
+                      // const imgTag = document.createElement("img");
+                      // imgTag.src = "images/"+replacedTime;
+                      // ImgCell.appendChild(imgTag);
                     }
                 }
               } 
@@ -64,26 +73,30 @@ $(document).ready(function () {
       });
       socket.on('image-data', imageData => {
         if (imageData.image) {
+          // replacedTime = imageData.time.replace(/\s/g, "_");
           ImgCell = document.querySelector(`.t${imageData.time}`);
           ImgCell.innerHTML = `<img src="${imageData.image}">`;
+          // const imgTag = document.createElement("img");
+          // imgTag.src = imageData.image;
+          // ImgCell.appendChild(imgTag);
         }
       });
-      socket.on('updateImage', (data)=>{
-        for(var y = 0;y < data.length;y++){
-        if (data[y].image) {
-          // console.log(data[y].image);
-          idd = "img"+y
-          console.log(idd)
-          elem = document.createElement("img");
-          buffer = Buffer.from(data[y].image, "base64");  
-          Jimp.read(buffer,  (err, res) => {
-              res.getBase64Async(jimp.MIME_PNG).then((newImage) => {
-              elem.src = newImage;  
-              document.getElementById(idd.toString()).appendChild(elem);
-            })
-          })
-        }
-      }})
+      // socket.on('updateImage', (data)=>{
+      //   for(var y = 0;y < data.length;y++){
+      //   if (data[y].image) {
+      //     // console.log(data[y].image);
+      //     idd = "img"+y
+      //     console.log(idd)
+      //     elem = document.createElement("img");
+      //     buffer = Buffer.from(data[y].image, "base64");  
+      //     Jimp.read(buffer,  (err, res) => {
+      //         res.getBase64Async(jimp.MIME_PNG).then((newImage) => {
+      //         elem.src = newImage;  
+      //         document.getElementById(idd.toString()).appendChild(elem);
+      //       })
+      //     })
+      //   }
+      // }})
       socket.on('changeTemHum', (data)=>{
         $('#TempHum').empty()
         $('#TempHum').append(`<div>🌡 Temp: ${data.temp}°C 💧 Hum: ${data.humidity}%</div>`)

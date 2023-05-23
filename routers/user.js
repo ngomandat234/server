@@ -14,6 +14,7 @@ router.get("/admin",(req,res)=> res.render("../views/admin.ejs"))
 router.get("/basicUser",async (req,res)=> {
     const list_students = await student.find().select('id name subject teacher time -_id');
         res.render("../views/basicUser.ejs",{studentList: list_students})
+    // console.log(list_students)
 })
 router.get("/stream",function (req,res){
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -57,35 +58,31 @@ router.post('/addSensor',async(req,res,next)=>{
         }
 })
 router.post('/updateTimeStudent', async(req,res,next) => {
-    reqq = JSON.parse(req.body.json)
+    reqq =  JSON.parse(req.body.json)
     const studentID = reqq.id
+    var replacedTime =  reqq.time.replace(/:/g, "-");
+    console.log(studentID)
+    // console.log(reqq.img)
     let updateData = ({
-        time: reqq.time
+        time: replacedTime
     })
-    student.updateOne({id:studentID}, {$push: updateData})
-    .then (async()=>
-    {
-        try
-        {
-            const buffer = Buffer.from(reqq.img, "base64");  
-            const nameImg = reqq.time + ".png";
-            Jimp.read(buffer, (err, res) => {
-                    if (err) throw new Error(err);
-                    res.quality(10).write("public/images/"+ nameImg);
-                    });
-            const list_students = await student.find().select('id -_id');
-            list_students.forEach((element, index) => 
-            {
-                if (element.id == studentID){
-                    sheets.updateTimeSheet(index, reqq.time);
-                }
+    // console.log("updatingg...")
+    // console.log("update success full")
+    const buffer = Buffer.from(reqq.img, "base64");  
+    var replacedTime1 = replacedTime.replace(/\s/g, "_");
+    // console.log(replacedTime1)
+    const nameImg = replacedTime1 + ".png";
+    // console.log(nameImg)
+    Jimp.read(buffer, (err, res) => {
+            if (err) throw new Error(err);
+            res.quality(5).write("public/images/"+ nameImg);
+            // console.log(res)
             });
-        }
-        catch (err) {
-            res.json({message:err})
-        }
+    await student.updateOne({id:studentID}, {$push: updateData})
+    .then (async()=>
+    {   
         res.json({message:"Update student Successfully"})
-    //     console.log("Update time Successfully - ID : " + studentID)
+        console.log("Update time Successfully - ID : " + studentID)
     })
     .catch ((err)=> 
     {

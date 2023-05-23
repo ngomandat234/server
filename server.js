@@ -11,6 +11,7 @@ const PORT = process.env.PORT ||  3001
 const mongoose = require('mongoose');
 //const URI = 'mongodb://localhost:27017/testdb'
 const URI = 'mongodb+srv://1111:1234@mernprojectceec.byvhv.mongodb.net/MERN_PROJECTCEEC?retryWrites=true&w=majority' 
+// const URI = 'mongodb+srv://1111:1234@mernprojectceec.byvhv.mongodb.net/?retryWrites=true&w=majority' 
 // const options = {
 //   key: fs.readFileSync("/"),
 //   cert: fs.readFileSync('C:/Users/lemin/cert.pem')
@@ -31,7 +32,7 @@ mongoose
     console.log(err)
 })
 app.use(bodyParser.json({limit: '50mb'}))
-app.use(bodyParser.urlencoded({extended:true, limit:"50mb", parameterLimit: 10000000}))
+app.use(bodyParser.urlencoded({extended:true, limit:"50mb", parameterLimit: 100000}))
 //app.use(cors())
 app.use(cors({
   origin: '*',
@@ -72,10 +73,14 @@ io.on('connection', function (socket) {
         // console.log(imageData.image)
         io.emit('image-data', imageData)
     })
+    socket.on('requestChangeData',async ()=>{
+        const list_students = await student.find().select('id name subject teacher time image -_id');
+        io.emit('changeData', list_students);
+
+    })
 });
 
 const changeStream = student.watch();
-
 changeStream.on('change', async(change) => {
     const list_students = await student.find().select('id name subject teacher time image -_id');
     // console.log(change); // You could parse out the needed info and send only that data. 
