@@ -1,4 +1,4 @@
-var socket = io.connect('http://localhost:3001', { transports : ['websocket'] });
+var socket = io.connect('http://192.168.0.2:3001', { transports : ['websocket'] });
 $(document).ready(function () {
     const form = document.querySelector('form')
     const name = document.querySelector('#name')
@@ -15,7 +15,7 @@ $(document).ready(function () {
     const delId = document.querySelector('#delId')
     const updtForm = document.querySelector('#updtForm')
     const table = document.getElementById('example');
-   
+    var currentData;
     if(socket !== undefined){
       console.log('Connected to socket...');
       // Handle Output
@@ -26,47 +26,52 @@ $(document).ready(function () {
       var replacedTime;
       socket.emit('requestChangeData')
       socket.on('changeData', async function (data){
+        // console.info(data)
+        currentData = data;
         const tbody = table.getElementsByTagName('tbody')[0];
         tbody.innerHTML = '';
         // $('#studentsList').empty()
         if(data.length){       
-                for(var x = 0;x < data.length;x++){
-                  if(data[x].time.length > 0)
-                    replacedTime = data[x].time[0].replace(/\s/g, "_");
-                    await $('#studentsList').append(`<tr>
-                    <th scope="row" class="sorting_1">${(x+1)}</th>
-                    <td>${data[x].id}</td>
-                    <td>${data[x].name}</td>
-                    <td>${data[x].subject}</td>
-                    <td>${data[x].teacher}</td>
-                    <td>${data[x].time.length > 0 ? data[x].time[0] : ""}</td>
-                    <td class = "t${replacedTime}"></td>
-                    </tr>`);
-                    for (var i = 1; i < data[x].time.length; i++){
-                    replacedTime = data[x].time[i].replace(/\s/g, "_");
-                    await $('#studentsList').append(`<tr>
-                    <th scope="row" class="sorting_1"></th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>${data[x].time[i]}</td>
-                    <td class = "t${replacedTime}"></td>
-                    </tr>`);
-                    }
-                    if(data[x].time.length && data[x].time[0] !='' )
-                    {
-                      for (var i = 0; i < data[x].time.length; i++){
-                      replacedTime = data[x].time[i].replace(/\s/g, "_");
-                      await socket.emit('requestImg', replacedTime);
-                      // ImgCell = await document.querySelector(`.t${data[x].time[i]}`);
-                      // ImgCell.innerHTML = `<img src="images/${data[x].time[i]}">`;
-                      // const imgTag = document.createElement("img");
-                      // imgTag.src = "images/"+replacedTime;
-                      // ImgCell.appendChild(imgTag);
-                    }
-                }
-              } 
+          for(var x = 0; x < data.length; x++)
+          {
+            if(data[x].time.length > 0) 
+              replacedTime = data[x].time[0].replace(/\s/g, "_");
+            await $('#studentsList').append(` <tr>
+                                              <th scope="row" class="sorting_1">${(x+1)}</th>
+                                              <td>${data[x].id}</td>
+                                              <td>${data[x].name}</td>
+                                              <td>${data[x].subject}</td>
+                                              <td>${data[x].teacher}</td>
+                                              <td>${data[x].time.length > 0 ? data[x].time[0] : ""}</td>
+                                              <td class = "t${data[x].time.length > 0 ? replacedTime : ""}"></td>
+                                              </tr>`);
+            for (var i = 1; i < data[x].time.length; i++)
+            {
+              replacedTime = data[x].time[i].replace(/\s/g, "_");
+              await $('#studentsList').append(` <tr>
+                                                <th scope="row" class="sorting_1"></th>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>${data[x].time[i]}</td>
+                                                <td class = "t${replacedTime}"></td>
+                                                </tr>`);
+            }
+            if(data[x].time.length && data[x].time[0] != '' )
+            {
+              for (var i = 0; i < data[x].time.length; i++)
+              {
+                replacedTime = data[x].time[i].replace(/\s/g, "_");
+                await socket.emit('requestImg', replacedTime);
+                // ImgCell = await document.querySelector(`.t${data[x].time[i]}`);
+                // ImgCell.innerHTML = `<img src="images/${data[x].time[i]}">`;
+                // const imgTag = document.createElement("img");
+                // imgTag.src = "images/"+replacedTime;
+                // ImgCell.appendChild(imgTag);
+              }
+            }
+          } 
                 } else { $('#cmn').append(`<tr>
                     <td colspan="12">${'There no one at all'}</td>
                     </tr>`)}
@@ -105,23 +110,24 @@ $(document).ready(function () {
     form.addEventListener('submit', async (e) => {
        e.preventDefault()     
        try {
-         const res = await fetch('/user/attendance', {
-         method: 'POST',
-         body: JSON.stringify({ name: name.value , id: id.value, subject: subject.value, teacher:teacher.value, time:time.value}),
-         headers: { 'Content-Type': 'application/json' }
-         })   
+            const res = await fetch('/user/attendance', {
+              method: 'POST',
+              body: JSON.stringify({ name: name.value , id: id.value, subject: subject.value, teacher:teacher.value, time:time.value}),
+              headers: { 'Content-Type': 'application/json' }
+              })  
           } catch (err) {
             console.log(err.message)
           }
         })
     delForm.addEventListener('submit', async (e) => {
         e.preventDefault()     
-        try {
-            const res = await fetch('/user/deleteAttendance', {
-             method: 'POST',
-             body: JSON.stringify({id: delId.value}),
-             headers: { 'Content-Type': 'application/json' }
-             }) 
+        try { 
+              const res = await fetch('/user/deleteAttendance', {
+              method: 'POST',
+              body: JSON.stringify({id: delId.value}),
+              headers: { 'Content-Type': 'application/json' }
+              }) 
+
               } catch (err) {
                 console.log(err.message)
               }
@@ -129,11 +135,16 @@ $(document).ready(function () {
     updtForm.addEventListener('submit', async (e) => {
       e.preventDefault()     
       try {
-        const res = await fetch('/user/updateStudent', {
-        method: 'POST',
-        body: JSON.stringify({ name: updtname.value , id: updtid.value, subject: updtsubject.value, teacher:updtteacher.value, time:updttime.value}),
-        headers: { 'Content-Type': 'application/json' }
-        })   
+        currentData.forEach( async (element) => {
+          if (element.id == updtid.value)
+          {
+            const res = await fetch('/user/updateStudent', {
+            method: 'POST',
+            body: JSON.stringify({ name: updtname.value , id: updtid.value, subject: updtsubject.value, teacher:updtteacher.value, time:updttime.value, previous: element}),
+            headers: { 'Content-Type': 'application/json' }
+            })   
+          }
+        });
          } catch (err) {
            console.log(err.message)
          }

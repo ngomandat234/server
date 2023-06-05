@@ -124,7 +124,7 @@ const addStudent = async(req,res,next) => {
     await newStudent.save()
     try{
         const list_students = await student.find().select('id -_id');
-        sheets.addSheet(list_students.length - 1, newStudent);
+        // sheets.addSheet(list_students.length - 1, newStudent);
         }
     catch (err) {
         res.json({message:err})
@@ -158,7 +158,7 @@ const delStudent = async(req,res,next) => {
     .then (async()=>{
         try{
             const list_students = await student.find().select('id name subject teacher time -_id');
-            sheets.reloadSheet(list_students);
+            // sheets.reloadSheet(list_students);
             }
         catch (err) {
             res.json({message:err})
@@ -199,12 +199,12 @@ const updateAndCreateStudent = async(req,res,next) => {
             try{
                 const newStudent = new student({
                     id: reqq.id,
-                    time: reqq.time,
+                    name: reqq.time,
                 })
                 newStudent.save()
                 try{
                     const list_students = student.find().select('id -_id');
-                    sheets.addSheet(list_students.length - 1, newStudent);
+                    // sheets.addSheet(list_students.length - 1, newStudent);
                     }
                 catch (err) {
                     res.json({message:err})
@@ -224,26 +224,11 @@ const updateTimeStudent = async(req,res,next) => {
     // console.log(req);
     reqq = JSON.parse(req.body.json)
             const studentID = reqq.id
-            let updateSheetData = ({
-                time: reqq.time
-            })
             let updateData = ({
-                image: reqq.img,
                 time: reqq.time
             })
             student.findOneAndUpdate({id:studentID}, {$set:updateData})
             .then (async()=>{
-                try{
-                    const list_students = await student.find().select('id -_id');
-                    list_students.forEach((element, index) => {
-                        if (element.id == studentID){
-                            sheets.updateTimeSheet(index, updateSheetData);
-                        }
-                });
-                    }
-                catch (err) {
-                    res.json({message:err})
-                }
                 res.json({message:"Update student Successfully"})
                 console.log("Update time Successfully - ID : " + studentID)
             })
@@ -282,17 +267,18 @@ const updateStudent = async(req,res,next) => {
     const studentID = req.body.id
             let updateData = ({
                 id: req.body.id,
-                name: req.body.name,
-                subject: req.body.subject,
-                teacher: req.body.teacher,
-                time: req.body.time
+                name: req.body.name == "" ? req.body.previous.name : req.body.name,
+                subject: req.body.subject == "" ? req.body.previous.subject : req.body.subject,
+                teacher: req.body.teacher == "" ? req.body.previous.teacher : req.body.teacher,
+                time: req.body.time == "" ? req.body.previous.time : req.body.time
             })
+            console.log(updateData)
             try
             {
                 const list_students = await student.find().select('id -_id');
                 list_students.forEach((element, index) => {
                     if (element.id == studentID){
-                        sheets.updateSheet(index, updateData);
+                        // sheets.updateSheet(index, updateData);
                     }
                 });
             //     // console.log(list_students)
