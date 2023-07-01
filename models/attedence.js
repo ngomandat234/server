@@ -8,6 +8,9 @@ const studentSchema = new Schema ({
         type:String
         
     },
+    mssv: {
+        type:String
+    },
     subject: {
         type:String
     },

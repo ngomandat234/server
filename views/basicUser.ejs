@@ -72,7 +72,8 @@
               <tr role="row">
                 <th class="wd-15p sorting_asc" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Sequense: activate to sort column descending" style="width: 5.825px;" aria-sort="ascending">NO.</th>
                 <th class="wd-15p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="ID: activate to sort column ascending" style="width: 82.7625px;">ID</th>
-                <th class="wd-20p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="NAME: activate to sort column ascending" style="width: 100.163px;">NAME</th>
+                <th class="wd-20p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="NAME: activate to sort column ascending" style="width: 55.163px;">NAME</th>
+                <th class="wd-20p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="MSSV: activate to sort column ascending" style="width: 44.163px;">MSSV</th>
                 <th class="wd-15p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="SUBJECT: activate to sort column ascending" style="width: 88.075px;">SUBJECT</th>
                 <th class="wd-10p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="TEACHER: activate to sort column ascending" style="width: 100.3375px;">TEACHER</th>
                 <th class="wd-25p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="TIME: activate to sort column ascending" style="width: 80.913px;">TIME</th>
@@ -86,6 +87,7 @@
                 <th scope="row" class="sorting_1"><%= (i+1) %></th>
                 <td ><%=studentList[i].id%></td>
                 <td ><%=studentList[i].name%></td>
+                <td ><%=studentList[i].mssv%></td>
                 <td ><%=studentList[i].subject%></td>
                 <td ><%=studentList[i].teacher%></td>
                 <td ><%=studentList[i].time[0]%></td>
@@ -143,6 +145,7 @@
               <!-- <label for="name" class="mt-1 form-label" >Add student:</label><br /> -->
               <input type="text" id="name" placeholder="Name" class="form-control " required /><br />
               <input type="text" id="id" placeholder="ID" class="form-control" required /><br />
+              <input type="text" id="mssv" placeholder="Mssv" class="form-control " required /><br />
               <input type="text" id="subject" placeholder="Subject" class="form-control"  /><br />
               <input type="text" id="teacher" placeholder="Teacher" class="form-control"  /> <br />
               <input type="text" id="time" placeholder="Time" class="form-control" /><br />
@@ -159,6 +162,7 @@
               <form class="updtForm" id="updtForm"> 
                 <input type="text" id="updateId" placeholder="ID" class="form-control" required /> 
                 <input type="text" id="updateName" placeholder="Name" class="form-control"  />
+                <input type="text" id="updateMssv" placeholder="Mssv" class="form-control"  />
                 <input type="text" id="updateSubject" placeholder="Subject" class="form-control" />
                 <input type="text" id="updateTeacher" placeholder="Teacher" class="form-control"  /> 
                 <input type="text" id="updateTime" placeholder="Time" class="form-control"  />

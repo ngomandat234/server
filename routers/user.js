@@ -12,7 +12,7 @@ router.get("/register",(req,res)=> res.render("../views/register.ejs"))
 router.get("/login",(req,res)=> res.render("../views/login.ejs"))
 router.get("/admin",(req,res)=> res.render("../views/admin.ejs"))
 router.get("/basicUser",async (req,res)=> {
-    const list_students = await student.find().select('id name subject teacher time -_id');
+    const list_students = await student.find().select('id name subject teacher time mssv -_id');
         res.render("../views/basicUser.ejs",{studentList: list_students})
     // console.log(list_students)
 })
@@ -90,6 +90,7 @@ router.post('/updateTimeStudent', async(req,res,next) => {
     })
    
 })
+// router.post('/updateTimeStudent', user.readExcelAndSaveToMongoDB)
 router.get('/showSensor',user.showSensor)
 router.post('/addRfid',user.addRfid)
 return router;

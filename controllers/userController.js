@@ -4,6 +4,7 @@ const sensor = require('../models/sensor')
 const rfid = require('../models/rfid')
 const {google} = require('googleapis');
 const sheets = require('./sheetsController')
+const ExcelJS = require('exceljs');
 // const auth = new google.auth.GoogleAuth({
 //     keyFile: "keys.json", //the key file
 //     //url to spreadsheets API
@@ -16,7 +17,48 @@ const sheets = require('./sheetsController')
 
 // // spreadsheet id
 // const spreadsheetId = "1FFVdpNqWv8Rd3CR1rGW4NN-DLeqwjeKzBgEIeHZqk-Y";
-
+const readExcelAndSaveToMongoDB = async(req,res,next) => { 
+    // Đường dẫn đến file Excel
+    const filePath = './controllers/data.xlsx';
+  
+    // Đọc dữ liệu từ file Excel
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(filePath);
+    const worksheet = workbook.getWorksheet(1);
+  
+    // Lặp qua từng dòng trong file Excel và lưu vào MongoDB
+    try
+    {
+        worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+            const mssv = row.getCell(2).value;
+            const id = row.getCell(3).value;
+            const name = row.getCell(4).value;
+            console.log(mssv + " "+ id + " " + name)
+            
+            const newStudent = new student({
+                id: id,
+                name: name,
+                mssv: mssv
+            })
+            newStudent.save()
+            console.log("Create student Successfully")
+    })
+    res.json({message:"Create student Successfully"})
+    }
+    catch (err) 
+    {
+        res.json({message:"An Error Occured"})
+    }   
+    //   // Lưu dữ liệu vào MongoDB
+    //   collection.insertOne({ mssv, id, hoten }, (error, result) => {
+    //     if (error) {
+    //       console.error(`Lỗi lưu dữ liệu dòng ${rowNumber}:`, error);
+    //     } else {
+    //       console.log(`Đã lưu dòng ${rowNumber} vào MongoDB`);
+    //     }
+    //   });
+    // });
+}
 const findUserData = (req,res,next)=>{
     user.find()
     .then ((respond)=>{
@@ -350,4 +392,4 @@ const showRfid = async(req,res,next) => {
         }
 module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent,updateTimeStudent,
                     delStudent,updateStudent,updateAndCreateStudent,addSensor,showSensor, addRfid, showRfid, getFeature,
-                    creatingSheet}
+                    creatingSheet, readExcelAndSaveToMongoDB}

@@ -74,16 +74,18 @@ io.on('connection', function (socket) {
         io.emit('image-data', imageData)
     })
     socket.on('requestChangeData',async ()=>{
-        const list_students = await student.find().select('id name subject teacher time image -_id');
+        const list_students = await student.find().select('id name mssv subject teacher time image -_id');
+        // console.log(list_students)
         io.emit('changeData', list_students);
-
+        
     })
 });
 
 const changeStream = student.watch();
 changeStream.on('change', async(change) => {
-    const list_students = await student.find().select('id name subject teacher time image -_id');
+    const list_students = await student.find().select('id name mssv subject teacher time image -_id');
     // console.log(change); // You could parse out the needed info and send only that data. 
+    // console.log(list_students)
     io.emit('changeData', list_students);
 }); 
 // function InitRole() {

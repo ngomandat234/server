@@ -1,12 +1,14 @@
-var socket = io.connect('http://192.168.0.2:3001', { transports : ['websocket'] });
+var socket = io.connect('http://192.168.0.111:3001', { transports : ['websocket'] });
 $(document).ready(function () {
     const form = document.querySelector('form')
     const name = document.querySelector('#name')
     const id = document.querySelector('#id')
+    const mssv = document.querySelector('#mssv')
     const subject = document.querySelector('#subject')
     const teacher = document.querySelector('#teacher')
     const time = document.querySelector('#time')
     const updtname = document.querySelector('#updateName')
+    const updtmssv = document.querySelector('#updateMssv')
     const updtid = document.querySelector('#updateId')
     const updtsubject = document.querySelector('#updateSubject')
     const updtteacher = document.querySelector('#updateTeacher')
@@ -26,7 +28,7 @@ $(document).ready(function () {
       var replacedTime;
       socket.emit('requestChangeData')
       socket.on('changeData', async function (data){
-        // console.info(data)
+        console.info(data)
         currentData = data;
         const tbody = table.getElementsByTagName('tbody')[0];
         tbody.innerHTML = '';
@@ -40,6 +42,7 @@ $(document).ready(function () {
                                               <th scope="row" class="sorting_1">${(x+1)}</th>
                                               <td>${data[x].id}</td>
                                               <td>${data[x].name}</td>
+                                              <td>${data[x].mssv}</td>
                                               <td>${data[x].subject}</td>
                                               <td>${data[x].teacher}</td>
                                               <td>${data[x].time.length > 0 ? data[x].time[0] : ""}</td>
@@ -50,6 +53,7 @@ $(document).ready(function () {
               replacedTime = data[x].time[i].replace(/\s/g, "_");
               await $('#studentsList').append(` <tr>
                                                 <th scope="row" class="sorting_1"></th>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -112,7 +116,7 @@ $(document).ready(function () {
        try {
             const res = await fetch('/user/attendance', {
               method: 'POST',
-              body: JSON.stringify({ name: name.value , id: id.value, subject: subject.value, teacher:teacher.value, time:time.value}),
+              body: JSON.stringify({ name: name.value , id: id.value, mssv: mssv.value, subject: subject.value, teacher:teacher.value, time:time.value}),
               headers: { 'Content-Type': 'application/json' }
               })  
           } catch (err) {
@@ -140,7 +144,7 @@ $(document).ready(function () {
           {
             const res = await fetch('/user/updateStudent', {
             method: 'POST',
-            body: JSON.stringify({ name: updtname.value , id: updtid.value, subject: updtsubject.value, teacher:updtteacher.value, time:updttime.value, previous: element}),
+            body: JSON.stringify({ name: updtname.value , id: updtid.value, mssv: updtmssv.value, subject: updtsubject.value, teacher:updtteacher.value, time:updttime.value, previous: element}),
             headers: { 'Content-Type': 'application/json' }
             })   
           }
