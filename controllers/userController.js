@@ -36,7 +36,7 @@ const readExcelAndSaveToMongoDB = async(req,res,next) => {
             console.log(mssv + " "+ id + " " + name)
             
             const newStudent = new student({
-                id: id,
+                id: id != "" ? id.toUpperCase() : id,
                 name: name,
                 mssv: mssv
             })
@@ -59,6 +59,32 @@ const readExcelAndSaveToMongoDB = async(req,res,next) => {
     //   });
     // });
 }
+const readExcelAndDelete = async(req,res,next) => { 
+
+    const filePath = './controllers/data.xlsx';
+
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(filePath);
+    const worksheet = workbook.getWorksheet(1);
+    try
+    {
+        worksheet.eachRow({ includeEmpty: false }, async(row, rowNumber) => {
+            const id = row.getCell(3).value;
+            console.log(id)
+            
+            const newStudent = new student({
+                id: id,
+            })
+            await student.findOneAndRemove({id: id})
+            console.log("Delete student Successfully")
+    })
+    res.json({message:"Create student Successfully"})
+    }
+    catch (err) 
+    {
+        res.json({message:"An Error Occured"})
+    }   
+}
 const findUserData = (req,res,next)=>{
     user.find()
     .then ((respond)=>{
@@ -69,9 +95,10 @@ const findUserData = (req,res,next)=>{
     })
 }
 const getFeature = (req,res,next)=>{
-    student.find().select('id feature name -_id')
+    student.find().select('id feature name mssv -_id')
     .then ((respond)=>{
-        res.status(200).json(respond)
+        const filteredObjects = respond.filter(obj => obj.feature.length !== 0);
+        res.status(200).json(filteredObjects)
     })
     .catch ((err)=> {
         res.status(500).json({error:err})
@@ -392,4 +419,4 @@ const showRfid = async(req,res,next) => {
         }
 module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent,updateTimeStudent,
                     delStudent,updateStudent,updateAndCreateStudent,addSensor,showSensor, addRfid, showRfid, getFeature,
-                    creatingSheet, readExcelAndSaveToMongoDB}
+                    creatingSheet, readExcelAndSaveToMongoDB, readExcelAndDelete}

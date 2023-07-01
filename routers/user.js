@@ -57,40 +57,41 @@ router.post('/addSensor',async(req,res,next)=>{
             res.json({message:"Error"})
         }
 })
-router.post('/updateTimeStudent', async(req,res,next) => {
-    reqq =  JSON.parse(req.body.json)
-    const studentID = reqq.id
-    var replacedTime =  reqq.time.replace(/:/g, "-");
-    console.log(studentID)
-    // console.log(reqq.img)
-    let updateData = ({
-        time: replacedTime
-    })
-    // console.log("updatingg...")
-    // console.log("update success full")
-    const buffer = Buffer.from(reqq.img, "base64");  
-    var replacedTime1 = replacedTime.replace(/\s/g, "_");
-    // console.log(replacedTime1)
-    const nameImg = replacedTime1 + ".png";
-    // console.log(nameImg)
-    Jimp.read(buffer, (err, res) => {
-            if (err) throw new Error(err);
-            res.quality(5).write("public/images/"+ nameImg);
-            // console.log(res)
-            });
-    await student.updateOne({id:studentID}, {$push: updateData})
-    .then (async()=>
-    {   
-        res.json({message:"Update student Successfully"})
-        console.log("Update time Successfully - ID : " + studentID)
-    })
-    .catch ((err)=> 
-    {
-        res.json({message:err})
-    })
+// router.post('/updateTimeStudent', async(req,res,next) => {
+//     reqq =  JSON.parse(req.body.json)
+//     const studentID = reqq.id
+//     var replacedTime =  reqq.time.replace(/:/g, "-");
+//     console.log(studentID)
+//     // console.log(reqq.img)
+//     let updateData = ({
+//         time: replacedTime
+//     })
+//     // console.log("updatingg...")
+//     // console.log("update success full")
+//     const buffer = Buffer.from(reqq.img, "base64");  
+//     var replacedTime1 = replacedTime.replace(/\s/g, "_");
+//     // console.log(replacedTime1)
+//     const nameImg = replacedTime1 + ".png";
+//     // console.log(nameImg)
+//     Jimp.read(buffer, (err, res) => {
+//             if (err) throw new Error(err);
+//             res.quality(5).write("public/images/"+ nameImg);
+//             // console.log(res)
+//             });
+//     await student.updateOne({id:studentID}, {$push: updateData})
+//     .then (async()=>
+//     {   
+//         res.json({message:"Update student Successfully"})
+//         console.log("Update time Successfully - ID : " + studentID)
+//     })
+//     .catch ((err)=> 
+//     {
+//         res.json({message:err})
+//     })
    
-})
-// router.post('/updateTimeStudent', user.readExcelAndSaveToMongoDB)
+// })
+router.post('/updateTimeStudent', user.readExcelAndSaveToMongoDB)
+// router.post('/updateTimeStudent', user.readExcelAndDelete)
 router.get('/showSensor',user.showSensor)
 router.post('/addRfid',user.addRfid)
 return router;
