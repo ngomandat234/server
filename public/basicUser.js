@@ -26,7 +26,9 @@ $(document).ready(function () {
       var idd;
       var ImgCell; 
       var replacedTime;
-      socket.emit('requestChangeData')
+      socket.emit('requestChangeData', ({class_id: "CE206.O11", date: new Date("2023/04/11")}))
+      
+      socket.on('triggerChangeData',  function (){socket.emit('requestChangeData', ({class_id: "CE206.O11", date: new Date("2023/04/11")}))})
       socket.on('changeData', async function (data){
         console.info(data)
         currentData = data;

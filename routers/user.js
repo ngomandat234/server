@@ -1,6 +1,7 @@
 const express = require('express')
 const student = require('../models/attedence')
 const rfid = require('../models/rfid')
+const index = require('../models/index')
 const router = express.Router()
 const user  = require('../controllers/userController')
 const sheets  = require('../controllers/sheetsController')
@@ -28,7 +29,55 @@ router.get("/ui",(req,res)=> res.render("../views/ui.ejs"))
 
 router.get("/getUser",user.findUserData)
 router.get("/getFeature",user.getFeature)
+router.get("/create",async(req,res,next)=>{
+try{
+    const newUser = new index.class({
+        class_id : "CE206.O11",
+        name: "Project 2 Class",
+        subject_id: "12230221",
+        teacher_id: "01",
+        agenda_ids : ["0001", "0002", "0003", "0004"],
+        student_ids: ["20520000", "20520001", "20520002", "20520003", "20520005", "20520006"]
+    })
+    // const newUser = new index.subject({
+    //         subject_id: "12230221",
+    //         name: "Project 2"
+    //     })
+    // const newUser = new index.subject({
+    //     subject_id: "12230221",
+    //     name: "Project 2"
+    // })
+    // const newUser = new index.teacher({
+    //     teacher_id: "12230221",
+    //     name: "Tran Van H",
+    //     birthday: new Date("1985-04-04"),
+    //     gender: "Male",
+    //     academic_rank: "Lecturer",
+    //     academic_degree: "Master",
+    // })
+    // const newUser = new index.student({
+    //     name : "Hoang Thi B",
+    //     student_id: "20520001",
+    //     card_id: "9A9F2164",
+    //     birthday: new Date("2002-06-26"),
+    //     gender: "Male",
+    //     attendance_status_ids : [],
+    //     facial_recognition_data: []
+    // })
+    // const newUser = new index.agenda({
+    //     agenda_id: "20520006",
+    //     date: new Date("2023-11-25"),
+    //     start_time: new Date("2023-11-25T13:00:00"),
+    //     end_time: new Date("2023-11-25T17:00:00"),
+    // })
+    await newUser.save()
+   res.json({message:"Add Successfully"})
 
+    }
+    catch (err) {
+        res.json({message:"An Error Occured"})
+    }
+})
 router.post("/showID", user.showID)
 router.post("/update", user.updateUser)
 router.post("/delete", user.deleteUser)
@@ -47,9 +96,11 @@ router.post('/updateStudent', user.updateStudent)
 // router.post('/updateTimeStudent', user.updateTimeStudent)
 router.post('/addSensor',async(req,res,next)=>{
     try{
+        var data = JSON.parse(req.body.json)
+        console.log(data.temp)
         let newSensor = ({
-            temp : req.body.temp,
-            humidity: req.body.humidity
+            temp : data.temp.toFixed(2),
+            humidity: data.hum.toFixed(2)
         })
         await io.emit('changeTemHum', newSensor);
         res.json({message:"Send Sensor Data Successfully"})
@@ -84,12 +135,13 @@ router.post('/id',async(req,res,next)=>{
         //     humidity: data.hum
         // })
         // await io.emit('changeTemHum', newSensor);
-        console.log(req.body.id)
-        res.json({message:"Sent id data successfully"})
+        // console.log(req.body.id)
+        // res.json({message:"Sent id data successfully"})
     }
     catch (err) {
         res.json({message:"Error"})
     }
+    
 })
 router.post('/updateTimeStudent', async(req,res,next) => {
     reqq =  JSON.parse(req.body.json)

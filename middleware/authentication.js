@@ -24,7 +24,6 @@ const token = req.session.token;
     // return res.sendStatus(403);
     // console.log("Not have token!");
     return res.render("../views/login.ejs")
-    
   }
   try {
     const data = jwt.verify(token, "attendance-secret-key");

@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
 const student = require('./models/attedence')
+const index = require('./models/index')
 const authUser = require('./routers/auth')
 //const authUser = require('./routers/auth')(aa)
 const path = require("path")
@@ -23,7 +24,8 @@ app.use(
   );
 //const URI = 'mongodb://localhost:27017/testdb'
 
-const URI = 'mongodb+srv://1111:1234@mernprojectceec.byvhv.mongodb.net/MERN_PROJECTCEEC?retryWrites=true&w=majority' 
+// const URI = 'mongodb+srv://1111:1234@mernprojectceec.byvhv.mongodb.net/MERN_PROJECTCEEC?retryWrites=true&w=majority' 
+const URI = "mongodb+srv://1111:1234@cluster0.lxqs9wg.mongodb.net/?retryWrites=true&w=majority"
 // const URI = 'mongodb+srv://1111:1234@mernprojectceec.byvhv.mongodb.net/?retryWrites=true&w=majority' 
 // const options = {
 //   key: fs.readFileSync("/"),
@@ -86,21 +88,114 @@ io.on('connection', function (socket) {
         // console.log(imageData.image)
         io.emit('image-data', imageData)
     })
-    socket.on('requestChangeData',async ()=>{
-        const list_students = await student.find().select('id name mssv subject teacher time image -_id');
-        // console.log(list_students)
-        io.emit('changeData', list_students);
-        
-    })
+    socket.on('requestChangeData', async (data) => {
+        let data_students = [];
+        var __subject, __teacher;
+    
+        try {
+            const _class = await new Promise((resolve, reject) => {
+                index.class.findOne({ class_id: data.class_id }, (err, _class) => {
+                    if (err) {
+                        console.log("DB not have this class");
+                        reject(err);
+                    }
+                    resolve(_class);
+                });
+            });
+    
+            if (_class) {
+                const _subject = await new Promise((resolve, reject) => {
+                    index.subject.findOne({ subject_id: _class.subject_id }, (err, _subject) => {
+                        if (err) {
+                            console.log("DB not have this subject");
+                            __subject = "";
+                            reject(err);
+                        }
+                        __subject = _subject.name;
+                        resolve(_subject);
+                    });
+                });
+    
+                const _teacher = await new Promise((resolve, reject) => {
+                    index.teacher.findOne({ teacher_id: _class.teacher_id }, (err, _teacher) => {
+                        if (err) {
+                            console.log("DB not have this teacher");
+                            __teacher = "";
+                            reject(err);
+                        }
+                        __teacher = _teacher.name;
+                        resolve(_teacher);
+                    });
+                });
+    
+                for (const _student_id of _class.student_ids) {
+                    const _student = await new Promise((resolve, reject) => {
+                        index.student.findOne({ student_id: _student_id }, (err, _student) => {
+                            if (err) {
+                                console.log("DB not have this student");
+                                reject(err);
+                            }
+                            resolve(_student);
+                        });
+                    });
+    
+                    if (_student) {
+                        var data_student = {
+                            id: _student.card_id,
+                            name: _student.name,
+                            mssv: _student_id,
+                            subject: __subject,
+                            teacher: __teacher,
+                            time: [],
+                            image: ""
+                        };
+    
+                        for (const _attendance_status_id of _student.attendance_status_ids) {
+                            const _attendance_status = await new Promise((resolve, reject) => {
+                                index.attendanceStatus.findOne({ attendance_status_id: _attendance_status_id }, (err, _attendance_status) => {
+                                    if (err) {
+                                        console.log("DB not have this attendance status");
+                                        reject(err);
+                                    }
+                                    if (_attendance_status.date.getDate() === data.date.getDate() && _attendance_status.date.getMonth() === data.date.getMonth() && _attendance_status.date.getFullYear() === data.date.getFullYear()) {
+                                        data_student.time.push(_attendance_status.status);
+                                        data_student.image = _attendance_status.image;
+                                        console.info(data_student);
+                                    }
+                                    resolve(_attendance_status);
+                                });
+                            });
+                        }
+    
+                        data_students.push(data_student);
+                        console.info(data_students);
+                    }
+                }
+    
+                await io.emit('changeData', data_students);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
 });
+const collections = [index.attendanceStatus, index.student, index.class, index.subject, index.teacher];
+const changeStreams = collections.map(collection => collection.watch());
 
-const changeStream = student.watch();
-changeStream.on('change', async(change) => {
-    const list_students = await student.find().select('id name mssv subject teacher time image -_id');
-    // console.log(change); // You could parse out the needed info and send only that data. 
-    // console.log(list_students)
-    io.emit('changeData', list_students);
-}); 
+changeStreams.forEach((changeStream, index) => {
+    changeStream.on('change', async change => {
+        io.emit(`triggerChangeData`);
+        // Handle other actions related to the specific collection change
+    });
+});
+// const changeStream = index.attendanceStatus.watch();
+// changeStream.on('change', async(change) => {
+//     io.emit('triggerChangeData');
+//     // const list_students = await student.find().select('id name mssv subject teacher time image -_id');
+//     // // console.log(change); // You could parse out the needed info and send only that data. 
+//     // // console.log(list_students)
+//     // io.emit('changeData', list_students);
+// }); 
 // function InitRole() {
 //     Role.estimatedDocumentCount((err, count) => {
 //       if (!err && count === 0) {

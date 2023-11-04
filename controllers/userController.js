@@ -5,6 +5,7 @@ const rfid = require('../models/rfid')
 const {google} = require('googleapis');
 const sheets = require('./sheetsController')
 const ExcelJS = require('exceljs');
+const index = require('../models/index')
 // const auth = new google.auth.GoogleAuth({
 //     keyFile: "keys.json", //the key file
 //     //url to spreadsheets API
