@@ -1,8 +1,14 @@
 html,
 body {
   height: 100%;
+  font-family: "Lato", Arial, sans-serif;
+  font-size: 16px;
 }
-
+.text {
+  font-size: 50px;
+  color: blue;
+  font-weight: bold;
+}
 /* body {
   display: -ms-flexbox;
   display: -webkit-box;
@@ -19,8 +25,18 @@ body {
 } */
 
 .navbar {
-  background-color: #051b40;
+  background-color: #0c426f;
+  }
+.navbar-item{
+  transition: .3s all ease;
+  color: #eaf1f7;
+  text-decoration: none;
+  background-color: transparent;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 5px;
 }
+
 .form-register {
   width: 100%;
   max-width: 450px;

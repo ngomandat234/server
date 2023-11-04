@@ -6,8 +6,8 @@ const auth = require("../middleware/authentication")
 const authUserController = require('../controllers/authUserController')
 
 router.post('/register',checkEmail,authUserController.register)
-router.post('/login',authUserController.login,auth)
-router.post('/logout',authUserController.logout,auth)
+router.post('/login', authUserController.login, auth.authenticate)
+router.post('/logout', authUserController.logout, auth.authenticate)
 
 // router.post('/logout',(req,res)=>{
 //     return res.cookie("token", "", { httpOnly: true,}, { maxAge: "1" })

@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const express = require("express");
 const db = require("../models")
 const user = db.user
+const student = require('../models/attedence')
 const cookieParser = require("cookie-parser");
 //const { user } = require('../models');
 const app = express();
@@ -18,15 +19,20 @@ const authenticate = async(req,res,next) => {
 //     //res.cookie("user-data", JSON.stringify(token), { maxAge: 86400000 ,httpOnly:true});
 //     next()
 // }
-const token = req.cookies.token;
+const token = req.session.token;
   if (!token) {
-    return res.sendStatus(403);
+    // return res.sendStatus(403);
+    // console.log("Not have token!");
+    return res.render("../views/login.ejs")
+    
   }
   try {
-    const data = jwt.verify(token, "ManDatDepTry");
+    const data = jwt.verify(token, "attendance-secret-key");
     const userLogin = await user.findOne({'_id':data._id, "token" : token})
-    req.user= userLogin
-    return next();
+    req.user = userLogin
+    // console.log("has token!");
+    // return next();
+    return res.redirect("/user/basicUser")
   }
     catch(err){
         if (err.name == "TokenExpiredError"){
@@ -37,4 +43,30 @@ const token = req.cookies.token;
     }
 }
 
-module.exports= authenticate
+const authenticateBasicUser = async(req,res,next) => {
+  const token = req.session.token;
+  if (!token) {
+    // return res.sendStatus(403);
+    // console.log("Not have token!");
+    return res.redirect("/user/login")
+    
+  }
+  try {
+    const data = jwt.verify(token, "attendance-secret-key");
+    const userLogin = await user.findOne({'_id':data._id, "token" : token})
+    req.user = userLogin
+    // console.log("has token!");
+    // return next();
+    const list_students = await student.find().select('id name subject teacher time mssv -_id');
+    return res.render("../views/basicUser.ejs",{studentList: list_students})
+  }
+    catch(err){
+        if (err.name == "TokenExpiredError"){
+            res.status(401).json({message:"Token expired"})
+        }
+        else
+            res.status(500).json({message:"Authentication failed"})
+    }
+}
+
+module.exports= {authenticate, authenticateBasicUser}

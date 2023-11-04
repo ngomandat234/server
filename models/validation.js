@@ -34,8 +34,10 @@ const loginValidation = function(data){
                 }),
         password: Joi.string()
                    .min(6)
-                   .required(),
-                          
+                   .required()
+                   .messages({
+                    'string.min':`The "Password" field is too short!`
+                }),
     })
    return  schema.validate(data)
 }

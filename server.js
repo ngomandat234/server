@@ -7,9 +7,22 @@ const authUser = require('./routers/auth')
 //const authUser = require('./routers/auth')(aa)
 const path = require("path")
 const cookieParser = require('cookie-parser')
+const cookieSession = require("cookie-session");
 const PORT = process.env.PORT ||  3001
 const mongoose = require('mongoose');
+var corsOptions = {
+    origin: "http://localhost:3000"
+  };
+app.use(cors(corsOptions));
+app.use(
+    cookieSession({
+      name: "attendance-session",
+      keys: ["COOKIE_SECRET"], // should use as secret environment variable
+      httpOnly: true
+    })
+  );
 //const URI = 'mongodb://localhost:27017/testdb'
+
 const URI = 'mongodb+srv://1111:1234@mernprojectceec.byvhv.mongodb.net/MERN_PROJECTCEEC?retryWrites=true&w=majority' 
 // const URI = 'mongodb+srv://1111:1234@mernprojectceec.byvhv.mongodb.net/?retryWrites=true&w=majority' 
 // const options = {

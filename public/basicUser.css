@@ -14,8 +14,13 @@ thead{
     background:  rgb(130, 176, 228);
   }
 .navbar {
-    background-color: #051b40;
+    background-color: #0c426f;
   }
+.text {
+  font-size: 50px;
+  color: blue;
+  font-weight: bold;
+}
 .accordion {
     background-color: rgb(130, 176, 228);
     color: #444;

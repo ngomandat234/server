@@ -6,12 +6,13 @@ const user  = require('../controllers/userController')
 const sheets  = require('../controllers/sheetsController')
 const auth = require("../middleware/authentication")
 const Jimp = require("jimp")
+
 module.exports = function (io) {
 router.get("/",(req,res)=> res.render("../views/home.ejs"))
 router.get("/register",(req,res)=> res.render("../views/register.ejs"))
-router.get("/login",(req,res)=> res.render("../views/login.ejs"))
+router.get("/login",auth.authenticate, (req,res)=> res.render("../views/login.ejs"))
 router.get("/admin",(req,res)=> res.render("../views/admin.ejs"))
-router.get("/basicUser",async (req,res)=> {
+router.get("/basicUser",auth.authenticateBasicUser, async (req,res)=> {
     const list_students = await student.find().select('id name subject teacher time mssv -_id');
         res.render("../views/basicUser.ejs",{studentList: list_students})
     // console.log(list_students)
@@ -57,40 +58,73 @@ router.post('/addSensor',async(req,res,next)=>{
             res.json({message:"Error"})
         }
 })
-// router.post('/updateTimeStudent', async(req,res,next) => {
-//     reqq =  JSON.parse(req.body.json)
-//     const studentID = reqq.id
-//     var replacedTime =  reqq.time.replace(/:/g, "-");
-//     console.log(studentID)
-//     // console.log(reqq.img)
-//     let updateData = ({
-//         time: replacedTime
-//     })
-//     // console.log("updatingg...")
-//     // console.log("update success full")
-//     const buffer = Buffer.from(reqq.img, "base64");  
-//     var replacedTime1 = replacedTime.replace(/\s/g, "_");
-//     // console.log(replacedTime1)
-//     const nameImg = replacedTime1 + ".png";
-//     // console.log(nameImg)
-//     Jimp.read(buffer, (err, res) => {
-//             if (err) throw new Error(err);
-//             res.quality(5).write("public/images/"+ nameImg);
-//             // console.log(res)
-//             });
-//     await student.updateOne({id:studentID}, {$push: updateData})
-//     .then (async()=>
-//     {   
-//         res.json({message:"Update student Successfully"})
-//         console.log("Update time Successfully - ID : " + studentID)
-//     })
-//     .catch ((err)=> 
-//     {
-//         res.json({message:err})
-//     })
+router.post('/temphum',async(req,res,next)=>{
+    try
+    {   
+        var data = JSON.parse(req.body.json)
+        let newSensor = ({
+            temp : data.temp,
+            humidity: data.hum
+        })
+        await io.emit('changeTemHum', newSensor);
+        console.log(newSensor)
+        res.json({message:"Sent sensor data successfully"})
+    }
+    catch (err) {
+        res.json({message:"Error"})
+    }
+})
+router.post('/id',async(req,res,next)=>{
+    try
+    {   
+        // var data = JSON.parse(req.body)
+        // console.log(req.body)
+        // let newSensor = ({
+        //     temp : data.temp,
+        //     humidity: data.hum
+        // })
+        // await io.emit('changeTemHum', newSensor);
+        console.log(req.body.id)
+        res.json({message:"Sent id data successfully"})
+    }
+    catch (err) {
+        res.json({message:"Error"})
+    }
+})
+router.post('/updateTimeStudent', async(req,res,next) => {
+    reqq =  JSON.parse(req.body.json)
+    const studentID = reqq.id
+    var replacedTime =  reqq.time.replace(/:/g, "-");
+    console.log(studentID)
+    // console.log(reqq.img)
+    let updateData = ({
+        time: replacedTime
+    })
+    // console.log("updatingg...")
+    // console.log("update success full")
+    const buffer = Buffer.from(reqq.img, "base64");  
+    var replacedTime1 = replacedTime.replace(/\s/g, "_");
+    // console.log(replacedTime1)
+    const nameImg = replacedTime1 + ".png";
+    // console.log(nameImg)
+    Jimp.read(buffer, (err, res) => {
+            if (err) throw new Error(err);
+            res.quality(5).write("public/images/"+ nameImg);
+            // console.log(res)
+            });
+    await student.updateOne({id:studentID}, {$push: updateData})
+    .then (async()=>
+    {   
+        res.json({message:"Update student Successfully"})
+        console.log("Update time Successfully - ID : " + studentID)
+    })
+    .catch ((err)=> 
+    {
+        res.json({message:err})
+    })
    
-// })
-router.post('/updateTimeStudent', user.readExcelAndSaveToMongoDB)
+})
+// router.post('/updateTimeStudent', user.readExcelAndSaveToMongoDB)
 // router.post('/updateTimeStudent', user.readExcelAndDelete)
 router.get('/showSensor',user.showSensor)
 router.post('/addRfid',user.addRfid)

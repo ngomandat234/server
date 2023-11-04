@@ -11,10 +11,10 @@ const register = (req,res,next)=>{
     User.findOne({ email }).then((user)=>{
         if (!user)
         {
-            bcryptjs.hash(req.body.password,10).then((user)=>{
+            bcryptjs.hash(req.body.password,10).then((hashedPassword)=>{
                 let newUser = new User({
                     name:req.body.name,
-                    password:user,
+                    password: hashedPassword,
                     email:req.body.email,
                     phone:req.body.phone,
                     role:req.body.role  
@@ -37,25 +37,25 @@ const register = (req,res,next)=>{
 }
 
  const login = (req,res,next) => {
-    const{ error } = db.loginValidation(req.body);
-    if(error) return res.status(400).json({message : error.message})
+    const { error } = db.loginValidation(req.body);
+    if (error) return res.status(400).json({message : error.message})
     else {
-     var email = req.body.email
-     var password = req.body.password
+    var email = req.body.email
+    var password = req.body.password
    //  User.findOne({$or : [{email:email}, {phone:email}]})
-         User.findOne({ email })
+    User.findOne({ email })
      .then((user)=>{
          if(user)
          {    
              //console.log(password)
-           bcryptjs.compare(password,user.password, function(err,data) {
+           bcryptjs.compare(password, user.password, function(err,data) {
                if(err) 
                {
                    res.status(500).json({error})
                }
 
             if(data){
-                   let token = jwt.sign({id:user.id}, "ManDatDepTry", {expiresIn : "1h"} )
+                   let token = jwt.sign({id:user.id}, "attendance-secret-key", {expiresIn : "1h"} )
                 //    /let refreshToken = jwt.sign({name:user.name}, "refreshToken", {expiresIn : "48h"} )
                     // res.status(200).json({
                     //     message:"Login Successfully",
@@ -65,7 +65,8 @@ const register = (req,res,next)=>{
                     //     token,
                     //     //refreshToken   
                     // })
-                    return res.cookie("token", token, { httpOnly: true,}) .status(200).json({ message: "Logged in successfully 😊 👌",id: user._id, role:user.role,});
+                    req.session.token = token;
+                    return res.cookie("token", token, { httpOnly: true,}).status(200).json({ message: "Logged in successfully!", id: user._id, role: user.role,});
               }
               else {
                   res.status(500).json({message: "Email or password is incorrect!"})
@@ -84,9 +85,10 @@ const register = (req,res,next)=>{
  }
 const logout = async (req,res,next) =>{
     try {
-    await res.clearCookie("token");
-    res.redirect("/")
-     // console.log("Dat Ngu", ret)
+        req.session = null;
+        await res.clearCookie("token");
+        res.redirect("/")
+        // console.log("Dat Ngu", ret)
     } catch (error) {
         res.status(500).json(error)
     }
