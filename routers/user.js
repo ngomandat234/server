@@ -136,7 +136,7 @@ router.post('/id',async(req,res,next)=>{
         // })
         // await io.emit('changeTemHum', newSensor);
         // console.log(req.body.id)
-        // res.json({message:"Sent id data successfully"})
+        res.json({message:"Sent id data successfully"})
     }
     catch (err) {
         res.json({message:"Error"})
@@ -144,27 +144,27 @@ router.post('/id',async(req,res,next)=>{
     
 })
 router.post('/updateTimeStudent', async(req,res,next) => {
-    reqq =  JSON.parse(req.body.json)
-    const studentID = reqq.id
-    var replacedTime =  reqq.time.replace(/:/g, "-");
-    console.log(studentID)
-    // console.log(reqq.img)
-    let updateData = ({
-        time: replacedTime
+    const attendanceStatus =  JSON.parse(req.body.json)
+    const studentID = attendanceStatus.id
+    const buffer = Buffer.from(attendanceStatus.img, "base64");  
+    const currentDate = new Date();
+    const dateStringISO = currentDate.toISOString();
+    // Output the ISO string
+    const nameImg = dateStringISO.replace(/:/g, "-") + ".png";
+    Jimp.read(buffer, (err, res) => 
+    {
+        if (err) throw new Error(err);
+        res.quality(5).write("public/images/"+ nameImg);
+    });
+    const statusID = studentID+dateStringISO;
+    const newAttendanceStatus = new index.attendanceStatus({
+            date: currentDate,
+            attendance_status_id: statusID,
+            status: dateStringISO,
+            image: dateStringISO.replace(/:/g, "-")
     })
-    // console.log("updatingg...")
-    // console.log("update success full")
-    const buffer = Buffer.from(reqq.img, "base64");  
-    var replacedTime1 = replacedTime.replace(/\s/g, "_");
-    // console.log(replacedTime1)
-    const nameImg = replacedTime1 + ".png";
-    // console.log(nameImg)
-    Jimp.read(buffer, (err, res) => {
-            if (err) throw new Error(err);
-            res.quality(5).write("public/images/"+ nameImg);
-            // console.log(res)
-            });
-    await student.updateOne({id:studentID}, {$push: updateData})
+    await newAttendanceStatus.save()
+    await index.student.updateOne({card_id:studentID},  {$push: {attendance_status_ids: statusID}})
     .then (async()=>
     {   
         res.json({message:"Update student Successfully"})

@@ -96,9 +96,11 @@ const findUserData = (req,res,next)=>{
     })
 }
 const getFeature = (req,res,next)=>{
-    student.find().select('id feature name mssv -_id')
+    index.student.find().select('card_id facial_recognition_data name student_id -_id')
     .then ((respond)=>{
-        const filteredObjects = respond.filter(obj => obj.feature.length !== 0);
+        // console.info(respond)
+        const filteredObjects = respond.filter(obj => obj.facial_recognition_data.length !== 0);
+        // console.info(filteredObjects)
         res.status(200).json(filteredObjects)
     })
     .catch ((err)=> {
@@ -242,53 +244,94 @@ const delStudent = async(req,res,next) => {
     })
     
 }
+// const updateAndCreateStudent = async(req,res,next) => {  
+//     console.log(req.body);
+//     reqq = JSON.parse(req.body.json)
+//     const studentID = reqq.id
+//     console.log(reqq);
+//     if(studentID != ""){
+//     student.countDocuments({id: studentID}, function (err, count){ 
+//         if(count > 0)
+//         {   
+//             // let updateData = ({
+//             //     //feature: reqq.feature,
+//             //     time: reqq.time
+//             // })
+//             // student.findOneAndUpdate({id:studentID}, {$set:updateData})
+//             student.updateOne({id:studentID}, {$push: {feature: reqq.feature}})
+//                 .then (()=>{
+//                     res.json({message:"Update student Successfully"})
+//                 })
+//                 .catch ((err)=> {
+//                     res.json({message:"An Error Occured"})
+//                 })
+//         } 
+//         else 
+//         {
+//             try{
+//                 const newStudent = new student({
+//                     id: reqq.id,
+//                     name: reqq.time,
+//                 })
+//                 newStudent.save()
+//                 try{
+//                     const list_students = student.find().select('id -_id');
+//                     // sheets.addSheet(list_students.length - 1, newStudent);
+//                     }
+//                 catch (err) {
+//                     res.json({message:err})
+//                 }
+//                 res.json({message:"Create student Successfully"})
+//                 }
+//                 catch (err) {
+//                     res.json({message:"An Error Occured"})
+//                 }    
+//         }
+//     });  
+// } else {
+//     res.json({message:"ID is null!!!"})
+// }
+// }
 const updateAndCreateStudent = async(req,res,next) => {  
-    console.log(req.body);
-    reqq = JSON.parse(req.body.json)
-    const studentID = reqq.id
-    console.log(reqq);
+    req_parse = JSON.parse(req.body.json)
+    const studentID = req_parse.id
+    console.log(req_parse);
     if(studentID != ""){
-    student.countDocuments({id: studentID}, function (err, count){ 
-        if(count > 0)
-        {   
-            // let updateData = ({
-            //     //feature: reqq.feature,
-            //     time: reqq.time
-            // })
-            // student.findOneAndUpdate({id:studentID}, {$set:updateData})
-            student.updateOne({id:studentID}, {$push: {feature: reqq.feature}})
+        index.student.countDocuments({card_id: studentID}, function (err, count){ 
+            if(count > 0)
+            {   
+                // let updateData = ({
+                //     //feature: req_parse.feature,
+                //     time: req_parse.time
+                // })
+                // student.findOneAndUpdate({id:studentID}, {$set:updateData})
+                index.student.updateOne({card_id:studentID}, {$push: {facial_recognition_data: req_parse.feature}})
                 .then (()=>{
                     res.json({message:"Update student Successfully"})
                 })
                 .catch ((err)=> {
                     res.json({message:"An Error Occured"})
                 })
-        } 
-        else 
-        {
-            try{
-                const newStudent = new student({
-                    id: reqq.id,
-                    name: reqq.time,
-                })
-                newStudent.save()
-                try{
-                    const list_students = student.find().select('id -_id');
-                    // sheets.addSheet(list_students.length - 1, newStudent);
-                    }
-                catch (err) {
-                    res.json({message:err})
-                }
-                res.json({message:"Create student Successfully"})
+            } 
+            else 
+            {
+                try
+                {
+                    const newStudent = new index.student({
+                        card_id: req_parse.id,
+                        name: req_parse.time,
+                    })
+                    newStudent.save()
+                    res.json({message:"Create student Successfully"})
                 }
                 catch (err) {
                     res.json({message:"An Error Occured"})
                 }    
-        }
-    });  
-} else {
-    res.json({message:"ID is null!!!"})
-}
+            }
+        });  
+    } else {
+        res.json({message:"ID is null!!!"})
+    }
 }
 const updateTimeStudent = async(req,res,next) => {
     // console.log(req);

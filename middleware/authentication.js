@@ -35,7 +35,8 @@ const token = req.session.token;
   }
     catch(err){
         if (err.name == "TokenExpiredError"){
-            res.status(401).json({message:"Token expired"})
+          return res.render("../views/login.ejs")
+            // res.status(401).json({message:"Token expired"})
         }
         else
             res.status(500).json({message:"Authentication failed"})
@@ -48,7 +49,6 @@ const authenticateBasicUser = async(req,res,next) => {
     // return res.sendStatus(403);
     // console.log("Not have token!");
     return res.redirect("/user/login")
-    
   }
   try {
     const data = jwt.verify(token, "attendance-secret-key");
@@ -61,7 +61,8 @@ const authenticateBasicUser = async(req,res,next) => {
   }
     catch(err){
         if (err.name == "TokenExpiredError"){
-            res.status(401).json({message:"Token expired"})
+            return res.redirect("/user/login")
+            // res.status(401).json({message:"Token expired"})
         }
         else
             res.status(500).json({message:"Authentication failed"})

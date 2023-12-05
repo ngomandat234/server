@@ -153,14 +153,15 @@ io.on('connection', function (socket) {
                         for (const _attendance_status_id of _student.attendance_status_ids) {
                             const _attendance_status = await new Promise((resolve, reject) => {
                                 index.attendanceStatus.findOne({ attendance_status_id: _attendance_status_id }, (err, _attendance_status) => {
+                                    let dateObject = new Date(data.date);
                                     if (err) {
                                         console.log("DB not have this attendance status");
                                         reject(err);
                                     }
-                                    if (_attendance_status.date.getDate() === data.date.getDate() && _attendance_status.date.getMonth() === data.date.getMonth() && _attendance_status.date.getFullYear() === data.date.getFullYear()) {
+                                    if (_attendance_status.date.getDate() === dateObject.getDate() && _attendance_status.date.getMonth() === dateObject.getMonth() && _attendance_status.date.getFullYear() === dateObject.getFullYear()) {
                                         data_student.time.push(_attendance_status.status);
                                         data_student.image = _attendance_status.image;
-                                        console.info(data_student);
+                                        // console.info(data_student);
                                     }
                                     resolve(_attendance_status);
                                 });
@@ -168,7 +169,9 @@ io.on('connection', function (socket) {
                         }
     
                         data_students.push(data_student);
-                        console.info(data_students);
+                        
+         
+                        // console.info(data_students);
                     }
                 }
     

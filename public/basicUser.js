@@ -26,7 +26,7 @@ $(document).ready(function () {
       var idd;
       var ImgCell; 
       var replacedTime;
-      socket.emit('requestChangeData', ({class_id: "CE206.O11", date: new Date("2023/04/11")}))
+      socket.emit('requestChangeData', ({class_id: "CE206.O11", date: new Date("2023/11/04")}))
       
       socket.on('triggerChangeData',  function (){socket.emit('requestChangeData', ({class_id: "CE206.O11", date: new Date("2023/04/11")}))})
       socket.on('changeData', async function (data){
@@ -85,8 +85,8 @@ $(document).ready(function () {
       socket.on('image-data', imageData => {
         if (imageData.image) {
           // replacedTime = imageData.time.replace(/\s/g, "_");
-          ImgCell = document.querySelector(`.t${imageData.time}`);
-          ImgCell.innerHTML = `<img src="${imageData.image}">`;
+          // ImgCell = document.querySelector(`.t${imageData.time}`);
+          // ImgCell.innerHTML = `<img src="${imageData.image}">`;
           // const imgTag = document.createElement("img");
           // imgTag.src = imageData.image;
           // ImgCell.appendChild(imgTag);
