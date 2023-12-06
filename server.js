@@ -147,7 +147,7 @@ io.on('connection', function (socket) {
                             subject: __subject,
                             teacher: __teacher,
                             time: [],
-                            image: ""
+                            image: []
                         };
     
                         for (const _attendance_status_id of _student.attendance_status_ids) {
@@ -160,7 +160,7 @@ io.on('connection', function (socket) {
                                     }
                                     if (_attendance_status.date.getDate() === dateObject.getDate() && _attendance_status.date.getMonth() === dateObject.getMonth() && _attendance_status.date.getFullYear() === dateObject.getFullYear()) {
                                         data_student.time.push(_attendance_status.status);
-                                        data_student.image = _attendance_status.image;
+                                        data_student.image.push(_attendance_status.image);
                                         // console.info(data_student);
                                     }
                                     resolve(_attendance_status);

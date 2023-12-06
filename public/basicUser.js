@@ -26,9 +26,9 @@ $(document).ready(function () {
       var idd;
       var ImgCell; 
       var replacedTime;
-      socket.emit('requestChangeData', ({class_id: "CE206.O11", date: new Date("2023/11/04")}))
+      socket.emit('requestChangeData', ({class_id: "CE206.O11", date: new Date("2023/12/05")}))
       
-      socket.on('triggerChangeData',  function (){socket.emit('requestChangeData', ({class_id: "CE206.O11", date: new Date("2023/04/11")}))})
+      socket.on('triggerChangeData',  function (){socket.emit('requestChangeData', ({class_id: "CE206.O11", date: new Date("2023/12/05")}))})
       socket.on('changeData', async function (data){
         console.info(data)
         currentData = data;
@@ -48,7 +48,7 @@ $(document).ready(function () {
                                               <td>${data[x].subject}</td>
                                               <td>${data[x].teacher}</td>
                                               <td>${data[x].time.length > 0 ? data[x].time[0] : ""}</td>
-                                              <td class = "t${data[x].time.length > 0 ? replacedTime : ""}"></td>
+                                              <td class = "t${data[x].time.length > 0 ? data[x].image[0] : ""}"></td>
                                               </tr>`);
             for (var i = 1; i < data[x].time.length; i++)
             {
@@ -61,7 +61,7 @@ $(document).ready(function () {
                                                 <td></td>
                                                 <td></td>
                                                 <td>${data[x].time[i]}</td>
-                                                <td class = "t${replacedTime}"></td>
+                                                <td class = "t${data[x].image[i]}"></td>
                                                 </tr>`);
             }
             if(data[x].time.length && data[x].time[0] != '' )
@@ -69,11 +69,11 @@ $(document).ready(function () {
               for (var i = 0; i < data[x].time.length; i++)
               {
                 replacedTime = data[x].time[i].replace(/\s/g, "_");
-                await socket.emit('requestImg', replacedTime);
-                // ImgCell = await document.querySelector(`.t${data[x].time[i]}`);
-                // ImgCell.innerHTML = `<img src="images/${data[x].time[i]}">`;
+                await socket.emit('requestImg', data[x].image[i]);
+                // ImgCell = await document.querySelector(`.t${data[x].image[i]}`);
+                // ImgCell.innerHTML = `<img src="images/${data[x].image[i]}">`;
                 // const imgTag = document.createElement("img");
-                // imgTag.src = "images/"+replacedTime;
+                // imgTag.src = "images/"+data[x].image[i];
                 // ImgCell.appendChild(imgTag);
               }
             }
@@ -85,8 +85,8 @@ $(document).ready(function () {
       socket.on('image-data', imageData => {
         if (imageData.image) {
           // replacedTime = imageData.time.replace(/\s/g, "_");
-          // ImgCell = document.querySelector(`.t${imageData.time}`);
-          // ImgCell.innerHTML = `<img src="${imageData.image}">`;
+          ImgCell = document.querySelector(`.t${imageData.time}`);
+          ImgCell.innerHTML = `<img src="${imageData.image}">`;
           // const imgTag = document.createElement("img");
           // imgTag.src = imageData.image;
           // ImgCell.appendChild(imgTag);

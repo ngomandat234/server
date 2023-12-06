@@ -150,7 +150,7 @@ router.post('/updateTimeStudent', async(req,res,next) => {
     const currentDate = new Date();
     const dateStringISO = currentDate.toISOString();
     // Output the ISO string
-    const nameImg = dateStringISO.replace(/:/g, "-") + ".png";
+    const nameImg = (dateStringISO.replace(/:/g, "-")).replace(/./g, "-") + ".png";
     Jimp.read(buffer, (err, res) => 
     {
         if (err) throw new Error(err);
@@ -161,7 +161,7 @@ router.post('/updateTimeStudent', async(req,res,next) => {
             date: currentDate,
             attendance_status_id: statusID,
             status: dateStringISO,
-            image: dateStringISO.replace(/:/g, "-")
+            image: (dateStringISO.replace(/:/g, "-")).replace(/./g, "-")
     })
     await newAttendanceStatus.save()
     await index.student.updateOne({card_id:studentID},  {$push: {attendance_status_ids: statusID}})
