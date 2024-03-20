@@ -14,7 +14,7 @@ const checkEmail = (req,res,next) => {
         if (data)  {
             //console.log("Username ton tai " + data)
             res.status(400).json({
-                message : "Username da ton tai " 
+                message : "Email da ton tai " 
             })
             return
         }

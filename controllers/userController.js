@@ -99,13 +99,109 @@ const getFeature = (req,res,next)=>{
     index.student.find().select('card_id facial_recognition_data name student_id -_id')
     .then ((respond)=>{
         // console.info(respond)
-        const filteredObjects = respond.filter(obj => obj.facial_recognition_data.length !== 0);
+        // const filteredObjects = respond.filter(obj => obj.facial_recognition_data.length !== 0);
         // console.info(filteredObjects)
-        res.status(200).json(filteredObjects)
+        res.status(200).json(respond)
     })
     .catch ((err)=> {
         res.status(500).json({error:err})
     })
+}    
+const getTable = async (req,res,next)=>{
+    var data = {
+        class_id : req.body.class_id,
+        date : new Date(req.body.date)
+    }
+    let data_students = [];
+    var __subject, __teacher;
+
+    try {
+        const _class = await new Promise((resolve, reject) => {
+            index.class.findOne({ class_id: data.class_id }, (err, _class) => {
+                if (err) {
+                    console.log("DB not have this class");
+                    reject(err);
+                }
+                resolve(_class);
+            });
+        });
+
+        if (_class) {
+            const _subject = await new Promise((resolve, reject) => {
+                index.subject.findOne({ subject_id: _class.subject_id }, (err, _subject) => {
+                    if (err) {
+                        console.log("DB not have this subject");
+                        __subject = "";
+                        reject(err);
+                    }
+                    __subject = _subject.name;
+                    resolve(_subject);
+                });
+            });
+
+            const _teacher = await new Promise((resolve, reject) => {
+                index.teacher.findOne({ teacher_id: _class.teacher_id }, (err, _teacher) => {
+                    if (err) {
+                        console.log("DB not have this teacher");
+                        __teacher = "";
+                        reject(err);
+                    }
+                    __teacher = _teacher.name;
+                    resolve(_teacher);
+                });
+            });
+
+            for (const _student_id of _class.student_ids) {
+                const _student = await new Promise((resolve, reject) => {
+                    index.student.findOne({ student_id: _student_id }, (err, _student) => {
+                        if (err) {
+                            console.log("DB not have this student");
+                            reject(err);
+                        }
+                        resolve(_student);
+                    });
+                });
+
+                if (_student) {
+                    var data_student = {
+                        id: _student.card_id,
+                        name: _student.name,
+                        mssv: _student_id,
+                        subject: __subject,
+                        teacher: __teacher,
+                        time: [],
+                        image: []
+                    };
+
+                    for (const _attendance_status_id of _student.attendance_status_ids) {
+                        const _attendance_status = await new Promise((resolve, reject) => {
+                            index.attendanceStatus.findOne({ attendance_status_id: _attendance_status_id }, (err, _attendance_status) => {
+                                let dateObject = new Date(data.date);
+                                if (err) {
+                                    console.log("DB not have this attendance status");
+                                    reject(err);
+                                }
+                                if (_attendance_status.date.getDate() === dateObject.getDate() && _attendance_status.date.getMonth() === dateObject.getMonth() && _attendance_status.date.getFullYear() === dateObject.getFullYear()) {
+                                    data_student.time.push(_attendance_status.status);
+                                    data_student.image.push(_attendance_status.image);
+                                    // console.info(data_student);
+                                }
+                                resolve(_attendance_status);
+                            });
+                        });
+                    }
+
+                    data_students.push(data_student);
+                    
+        
+                    // console.info(data_students);
+                }
+            }
+            res.status(200).json(data_students)
+        }
+    } catch (error) {
+        res.status(500).json({error:err})
+    }
 }    
 const showID = (req,res,next) =>{
     const userID = req.body.userID
@@ -462,5 +558,5 @@ const showRfid = async(req,res,next) => {
             })
         }
 module.exports = {findUserData,showID,addUser,updateUser,deleteUser,addStudent,updateTimeStudent,
-                    delStudent,updateStudent,updateAndCreateStudent,addSensor,showSensor, addRfid, showRfid, getFeature,
+                    delStudent,updateStudent,updateAndCreateStudent,addSensor,showSensor, addRfid, showRfid, getFeature, getTable,
                     creatingSheet, readExcelAndSaveToMongoDB, readExcelAndDelete}

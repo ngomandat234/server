@@ -17,6 +17,10 @@ $(document).ready(function () {
     const delId = document.querySelector('#delId')
     const updtForm = document.querySelector('#updtForm')
     const table = document.getElementById('example');
+
+    const datePicker = document.getElementById('selectedDate');
+    const subjectLabel = document.getElementById('subject');
+    const teacherLabel = document.getElementById('teacher');
     var currentData;
     if(socket !== undefined){
       console.log('Connected to socket...');
@@ -26,9 +30,9 @@ $(document).ready(function () {
       var idd;
       var ImgCell; 
       var replacedTime;
-      socket.emit('requestChangeData', ({class_id: "CE206.O11", date: new Date("2023/12/05")}))
+      socket.emit('requestChangeData', ({class_id: "CE206.O11", date: new Date(datePicker.value)}))
       
-      socket.on('triggerChangeData',  function (){socket.emit('requestChangeData', ({class_id: "CE206.O11", date: new Date("2023/12/05")}))})
+      socket.on('triggerChangeData',  function (){socket.emit('requestChangeData', ({class_id: "CE206.O11", date: new Date(datePicker.value)}))})
       socket.on('changeData', async function (data){
         console.info(data)
         currentData = data;
@@ -36,6 +40,8 @@ $(document).ready(function () {
         tbody.innerHTML = '';
         // $('#studentsList').empty()
         if(data.length){       
+          subjectLabel.innerHTML = data[0].subject
+          teacherLabel.innerHTML = data[0].teacher
           for(var x = 0; x < data.length; x++)
           {
             if(data[x].time.length > 0) 
@@ -45,8 +51,6 @@ $(document).ready(function () {
                                               <td>${data[x].id}</td>
                                               <td>${data[x].name}</td>
                                               <td>${data[x].mssv}</td>
-                                              <td>${data[x].subject}</td>
-                                              <td>${data[x].teacher}</td>
                                               <td>${data[x].time.length > 0 ? data[x].time[0] : ""}</td>
                                               <td class = "t${data[x].time.length > 0 ? data[x].image[0] : ""}"></td>
                                               </tr>`);
@@ -55,8 +59,6 @@ $(document).ready(function () {
               replacedTime = data[x].time[i].replace(/\s/g, "_");
               await $('#studentsList').append(` <tr>
                                                 <th scope="row" class="sorting_1"></th>
-                                                <td></td>
-                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -113,6 +115,11 @@ $(document).ready(function () {
         $('#TempHum').append(`<div>🌡 Temp: ${data.temp}°C 💧 Hum: ${data.humidity}%</div>`)
       })
   }
+  datePicker.addEventListener('change', function () {
+      const selectedDate = datePicker.value;
+      var formattedDate = new Date(selectedDate);
+      socket.emit('requestChangeData', ({class_id: "CE206.O11", date: formattedDate}))
+  });
     form.addEventListener('submit', async (e) => {
        e.preventDefault()     
        try {
@@ -159,6 +166,7 @@ $(document).ready(function () {
     // display.textContent = ''
     const logOut = document.getElementById("buttonID")
     logOut.addEventListener("click", async(e)=> {
+    console.log("logout")
      e.preventDefault()
      try {
          await fetch('/auth/logout', {

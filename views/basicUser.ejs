@@ -50,15 +50,19 @@
             <div class="row">
               <div class="col-sm-12 col-md-6">
                 <div class="dataTables_length" id="example_length">
-                  <h2>Class: IT006.L21 - 3/6/2023</h2>
-                  <label>Show 
-                    <select name="example_length" aria-controls="example" class="custom-select custom-select-sm form-control form-control-sm">
-                      <option value="10">10</option>
-                      <option value="25">25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select> entries</label>
-                  </div>
+                  <!-- <label id="class">CE206.O11</label> -->
+                  <h2>Class: 
+                    <select>
+                      <option value="apple">CE206.O11</option>
+                      <option value="banana">CE206.O12</option>
+                      <option value="orange">CE206.O21</option>
+                      <option value="grape">CE206.O22</option>
+                    </select>
+                  </h2>
+                  <h2>Date: <input type="date" name="date" id="selectedDate"></h2>
+                  <h2>Subject: <label id="subject"></label></h2>
+                  <h2>Teacher: <label id="teacher"></label></h2>
+                </div>
                 </div>
                 <div class="col-sm-12 col-md-6">
                   <div id="example_filter" class="dataTables_filter">
@@ -74,35 +78,32 @@
             <thead>
               <tr role="row">
                 <th class="wd-15p sorting_asc" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Sequense: activate to sort column descending" style="width: 5.825px;" aria-sort="ascending">NO.</th>
-                <th class="wd-15p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="ID: activate to sort column ascending" style="width: 82.7625px;">ID</th>
-                <th class="wd-20p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="NAME: activate to sort column ascending" style="width: 55.163px;">NAME</th>
-                <th class="wd-20p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="MSSV: activate to sort column ascending" style="width: 44.163px;">MSSV</th>
-                <th class="wd-15p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="SUBJECT: activate to sort column ascending" style="width: 88.075px;">SUBJECT</th>
-                <th class="wd-10p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="TEACHER: activate to sort column ascending" style="width: 100.3375px;">TEACHER</th>
-                <th class="wd-25p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="TIME: activate to sort column ascending" style="width: 80.913px;">TIME</th>
-                <th class="wd-10p sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="IMAGE" style="width: 120.3375px;">IMAGE</th>
+                <th class="wd-15p " tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="ID: activate to sort column ascending" style="width: 82.7625px;">ID</th>
+                <th class="wd-20p " tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="NAME: activate to sort column ascending" style="width: 55.163px;">NAME</th>
+                <th class="wd-20p " tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="MSSV: activate to sort column ascending" style="width: 44.163px;">MSSV</th>
+                <!-- <th class="wd-15p " tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="SUBJECT: activate to sort column ascending" style="width: 88.075px;">SUBJECT</th>
+                <th class="wd-10p " tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="TEACHER: activate to sort column ascending" style="width: 100.3375px;">TEACHER</th> -->
+                <th class="wd-25p " tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="STATUS: activate to sort column ascending" style="width: 80.913px;">STATUS</th>
+                <th class="wd-10p " tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="IMAGE" style="width: 120.3375px;">IMAGE</th>
               </tr> 
             </thead>
-            <tbody id="studentsList">
-            <% if(studentList.length){
-              for(var i = 0; i< studentList.length; i++) {%>  
+            <tbody id="studentsList"> 
               <tr>
-                <th scope="row" class="sorting_1"><%= (i+1) %></th>
-                <td ><%=studentList[i].id%></td>
-                <td ><%=studentList[i].name%></td>
-                <td ><%=studentList[i].mssv%></td>
-                <td ><%=studentList[i].subject%></td>
-                <td ><%=studentList[i].teacher%></td>
-                <td ><%=studentList[i].time[0]%></td>
-                <td ><div id="img<%=i%>" width="120px" height="auto"></div></td>
+                <td colspan="12">
+                  <div class="center">
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                </div>
+                </td>
               </tr>
-              <% }
-                        
-                }else{ %>
-                    <tr>
-                      <td colspan="12">No student</td>
-                    </tr>
-                <% } %>   
             </tbody>
           </table>
         </div>
@@ -140,12 +141,11 @@
       </div>
     </div>
 
-        <div class="container" style="margin-top: 50px;">
+        <div class="container" style="margin-top: 50px; display:none ;">
           <div class="row">
             <div class="col-sm">
             <button class="accordion mb-2">Add student:</button>
             <form class="form">   
-              <!-- <label for="name" class="mt-1 form-label" >Add student:</label><br /> -->
               <input type="text" id="name" placeholder="Name" class="form-control " required /><br />
               <input type="text" id="id" placeholder="ID" class="form-control" required /><br />
               <input type="text" id="mssv" placeholder="Mssv" class="form-control " required /><br />

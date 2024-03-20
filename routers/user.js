@@ -7,7 +7,7 @@ const user  = require('../controllers/userController')
 const sheets  = require('../controllers/sheetsController')
 const auth = require("../middleware/authentication")
 const Jimp = require("jimp")
-
+const attendStatus = ["Rfid attendance","Rfid-face attendance","Rfid-#face attendance"]
 module.exports = function (io) {
 router.get("/",(req,res)=> res.render("../views/home.ejs"))
 router.get("/register",(req,res)=> res.render("../views/register.ejs"))
@@ -29,16 +29,17 @@ router.get("/ui",(req,res)=> res.render("../views/ui.ejs"))
 
 router.get("/getUser",user.findUserData)
 router.get("/getFeature",user.getFeature)
+router.post("/getTable", user.getTable)
 router.get("/create",async(req,res,next)=>{
 try{
-    const newUser = new index.class({
-        class_id : "CE206.O11",
-        name: "Project 2 Class",
-        subject_id: "12230221",
-        teacher_id: "01",
-        agenda_ids : ["0001", "0002", "0003", "0004"],
-        student_ids: ["20520000", "20520001", "20520002", "20520003", "20520005", "20520006"]
-    })
+    // const newUser = new index.class({
+    //     class_id : "CE206.O11",
+    //     name: "Project 2 Class",
+    //     subject_id: "12230221",
+    //     teacher_id: "01",
+    //     agenda_ids : ["0001", "0002", "0003", "0004"],
+    //     student_ids: ["20520000", "20520001", "20520002", "20520003", "20520005", "20520006"]
+    // })
     // const newUser = new index.subject({
     //         subject_id: "12230221",
     //         name: "Project 2"
@@ -55,15 +56,15 @@ try{
     //     academic_rank: "Lecturer",
     //     academic_degree: "Master",
     // })
-    // const newUser = new index.student({
-    //     name : "Hoang Thi B",
-    //     student_id: "20520001",
-    //     card_id: "9A9F2164",
-    //     birthday: new Date("2002-06-26"),
-    //     gender: "Male",
-    //     attendance_status_ids : [],
-    //     facial_recognition_data: []
-    // })
+    const newUser = new index.student({
+        name : "Lê Đăng Quang",
+        card_id: "A762264",
+        student_id: "21521338",
+        birthday: new Date("2002-06-26"),
+        gender: "Female",
+        attendance_status_ids : [],
+        facial_recognition_data: []
+    })
     // const newUser = new index.agenda({
     //     agenda_id: "20520006",
     //     date: new Date("2023-11-25"),
@@ -144,13 +145,16 @@ router.post('/id',async(req,res,next)=>{
     
 })
 router.post('/updateTimeStudent', async(req,res,next) => {
-    const attendanceStatus =  JSON.parse(req.body.json)
+    // console.log(req.body.json)
+    const attendanceStatus = JSON.parse(req.body.json)
     const studentID = attendanceStatus.id
     const buffer = Buffer.from(attendanceStatus.img, "base64");  
     const currentDate = new Date();
+    // console.log(currentDate.getHours())
     const dateStringISO = currentDate.toISOString();
+    // console.log(dateStringISO)
     // Output the ISO string
-    const nameImg = (dateStringISO.replace(/:/g, "-")).replace(/./g, "-") + ".png";
+    const nameImg = (dateStringISO.replace(/:/g, "-")).replace(/\./g, "-") + ".png";
     Jimp.read(buffer, (err, res) => 
     {
         if (err) throw new Error(err);
@@ -160,8 +164,8 @@ router.post('/updateTimeStudent', async(req,res,next) => {
     const newAttendanceStatus = new index.attendanceStatus({
             date: currentDate,
             attendance_status_id: statusID,
-            status: dateStringISO,
-            image: (dateStringISO.replace(/:/g, "-")).replace(/./g, "-")
+            status: attendStatus[attendanceStatus.status] + " - " + currentDate.getHours() + ":"+ currentDate.getMinutes() + ":" + currentDate.getSeconds(),
+            image: (dateStringISO.replace(/:/g, "-")).replace(/\./g, "-")
     })
     await newAttendanceStatus.save()
     await index.student.updateOne({card_id:studentID},  {$push: {attendance_status_ids: statusID}})

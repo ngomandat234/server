@@ -21,7 +21,7 @@ const register = (req,res,next)=>{
                 })
                 newUser.save()
                 .then(()=>{
-                    res.json("An auth user is added!")
+                    res.json({message: "An auth user is added!"})
                 }).catch((err)=>{
                     res.status(500).json({error:err})
                 })
@@ -42,6 +42,7 @@ const register = (req,res,next)=>{
     else {
     var email = req.body.email
     var password = req.body.password
+    console.log(email + " " + password)
    //  User.findOne({$or : [{email:email}, {phone:email}]})
     User.findOne({ email })
      .then((user)=>{
@@ -66,7 +67,7 @@ const register = (req,res,next)=>{
                     //     //refreshToken   
                     // })
                     req.session.token = token;
-                    return res.cookie("token", token, { httpOnly: true,}).status(200).json({ message: "Logged in successfully!", id: user._id, role: user.role,});
+                    return res.cookie("token", token, { httpOnly: true,}).status(200).json({ message: "Logged in successfully!", id: user._id, role: user.role, token: token});
               }
               else {
                   res.status(500).json({message: "Email or password is incorrect!"})
